@@ -69,4 +69,29 @@ class ProductController
         $name = $stmt->fetchColumn();
         return $name ? (string)$name : null;
     }
+    public function promotionsData(array $query): array
+    {
+        $pm = new Product($this->pdo);
+        $cm = new Category($this->pdo);
+        $bm = new Brand($this->pdo);
+
+        $sort = (string)($query['sort'] ?? 'newest');
+        $allowedSorts = ['newest', 'price_asc', 'price_desc'];
+        if (!in_array($sort, $allowedSorts, true)) {
+            $sort = 'newest';
+        }
+
+        $products = $pm->getPromotionalProducts($sort);
+
+        return [
+            'products' => $products,
+            'categories' => $cm->getWithCount(),
+            'brands' => $bm->getActiveBrands(),
+            'cat' => 0,
+            'brand' => 0,
+            'q' => '',
+            'sort' => $sort,
+            'heading' => 'Sản phẩm Khuyến mãi',
+        ];
+    }
 }

@@ -21,41 +21,77 @@ require_once __DIR__ . '/includes/header.php';
 
     <div class="row g-4 mt-2" id="shop-content">
 
+        <!-- Promotional Banner Top -->
+        <div class="col-12 mb-2">
+            <div class="d-flex justify-content-between align-items-center bg-primary text-white p-4 rounded-4 shadow-sm" style="background: linear-gradient(135deg, #2563eb, #1e40af) !important;">
+                <div>
+                    <h4 class="fw-bold mb-1"><i class="bi bi-tags-fill text-warning me-2"></i>Sản phẩm đang khuyến mãi</h4>
+                    <p class="mb-0 text-white-50">Săn ngay các deal công nghệ giảm giá cực sâu hôm nay.</p>
+                </div>
+                <a href="<?= BASE_URL ?>/promotions.php" class="btn btn-warning fw-bold text-dark rounded-pill px-4">Xem tất cả deal</a>
+            </div>
+        </div>
+
         <!-- Sidebar -->
         <aside class="col-lg-3">
             <div class="filter-sidebar">
-                <h6>Danh mục</h6>
-                <ul class="filter-list">
-                    <li>
-                        <a href="<?= BASE_URL ?>/shop.php<?= $brand ? '?brand=' . (int)$brand : '' ?>#shop-content"
-                           class="<?= !$cat ? 'active' : '' ?>">
-                            Tất cả sản phẩm
-                            <span class="filter-badge"><?= array_sum(array_map('intval', array_column($categories, 'so_luong'))) ?></span>
-                        </a>
-                    </li>
+                <div class="accordion" id="filterAccordion">
+                    
+                    <!-- Categories -->
+                    <div class="accordion-item border-0 bg-transparent mb-3">
+                        <h2 class="accordion-header" id="headingCat">
+                            <button class="accordion-button bg-light rounded-3 fw-bold shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCat" aria-expanded="true" aria-controls="collapseCat">
+                                Danh mục
+                            </button>
+                        </h2>
+                        <div id="collapseCat" class="accordion-collapse collapse show" aria-labelledby="headingCat">
+                            <div class="accordion-body px-2 py-3">
+                                <ul class="filter-list">
+                                    <li>
+                                        <a href="<?= BASE_URL ?>/shop.php<?= $brand ? '?brand=' . (int)$brand : '' ?>#shop-content"
+                                           class="<?= !$cat ? 'active' : '' ?>">
+                                            Tất cả sản phẩm
+                                            <span class="filter-badge"><?= array_sum(array_map('intval', array_column($categories, 'so_luong'))) ?></span>
+                                        </a>
+                                    </li>
+                                    <?php foreach ($categories as $c): ?>
+                                    <li>
+                                        <a href="<?= BASE_URL ?>/shop.php?category=<?= (int)$c['id_danh_muc'] ?><?= $brand ? '&brand=' . (int)$brand : '' ?>#shop-content"
+                                           class="<?= $cat === (int)$c['id_danh_muc'] ? 'active' : '' ?>">
+                                            <?= h($c['ten_danh_muc']) ?>
+                                            <span class="filter-badge"><?= (int)$c['so_luong'] ?></span>
+                                        </a>
+                                    </li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
 
-                    <?php foreach ($categories as $c): ?>
-                    <li>
-                        <a href="<?= BASE_URL ?>/shop.php?category=<?= (int)$c['id_danh_muc'] ?><?= $brand ? '&brand=' . (int)$brand : '' ?>#shop-content"
-                           class="<?= $cat === (int)$c['id_danh_muc'] ? 'active' : '' ?>">
-                            <?= h($c['ten_danh_muc']) ?>
-                            <span class="filter-badge"><?= (int)$c['so_luong'] ?></span>
-                        </a>
-                    </li>
-                    <?php endforeach; ?>
-                </ul>
+                    <!-- Brands -->
+                    <div class="accordion-item border-0 bg-transparent mb-3">
+                        <h2 class="accordion-header" id="headingBrand">
+                            <button class="accordion-button bg-light rounded-3 fw-bold shadow-none <?= $brand ? '' : 'collapsed' ?>" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBrand" aria-expanded="<?= $brand ? 'true' : 'false' ?>" aria-controls="collapseBrand">
+                                Thương hiệu
+                            </button>
+                        </h2>
+                        <div id="collapseBrand" class="accordion-collapse collapse <?= $brand ? 'show' : '' ?>" aria-labelledby="headingBrand">
+                            <div class="accordion-body px-2 py-3">
+                                <ul class="filter-list">
+                                    <?php foreach ($brands as $b): ?>
+                                    <li>
+                                        <a href="<?= BASE_URL ?>/shop.php?brand=<?= (int)$b['id'] ?><?= $cat ? '&category=' . (int)$cat : '' ?>#shop-content"
+                                           class="<?= $brand === (int)$b['id'] ? 'active' : '' ?>">
+                                            <?= h($b['name']) ?>
+                                        </a>
+                                    </li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
 
-                <h6>Thương hiệu</h6>
-                <ul class="filter-list">
-                    <?php foreach ($brands as $b): ?>
-                    <li>
-                        <a href="<?= BASE_URL ?>/shop.php?brand=<?= (int)$b['id'] ?><?= $cat ? '&category=' . (int)$cat : '' ?>#shop-content"
-                           class="<?= $brand === (int)$b['id'] ? 'active' : '' ?>">
-                            <?= h($b['name']) ?>
-                        </a>
-                    </li>
-                    <?php endforeach; ?>
-                </ul>
+                </div>
             </div>
         </aside>
 
@@ -123,11 +159,14 @@ require_once __DIR__ . '/includes/header.php';
                                     <span class="p-old-price"><?= format_price($p['gia_ban']) ?></span>
                                 <?php endif; ?>
                             </div>
-                            <div class="p-actions">
-                                <button class="btn-add-cart ajax-cart-btn" data-id="<?= (int)$p['id_san_pham'] ?>">
-                                    <i class="bi bi-cart-plus"></i> Thêm vào giỏ
+                            <div class="p-actions mt-3 d-flex gap-2">
+                                <button class="btn btn-primary flex-fill ajax-buy-now-btn py-2 fw-bold" style="font-size: 14px;" data-id="<?= (int)$p['id_san_pham'] ?>">
+                                    Mua ngay
                                 </button>
-                                <button class="btn-fav ajax-favorite-btn" data-id="<?= (int)$p['id_san_pham'] ?>" title="Yêu thích">
+                                <button class="btn btn-outline-primary flex-fill ajax-cart-btn py-2" data-id="<?= (int)$p['id_san_pham'] ?>" title="Thêm vào giỏ" style="max-width: 45px; padding: 0;">
+                                    <i class="bi bi-cart-plus"></i>
+                                </button>
+                                <button class="btn btn-outline-danger flex-fill ajax-favorite-btn py-2" data-id="<?= (int)$p['id_san_pham'] ?>" title="Yêu thích" style="max-width: 45px; padding: 0;">
                                     <i class="bi bi-heart"></i>
                                 </button>
                             </div>
