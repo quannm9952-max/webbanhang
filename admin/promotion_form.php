@@ -32,6 +32,10 @@ require __DIR__ . '/_layout_start.php';
 
 $products = $m->productsForPromotionSelect();
 $selected = $id ? $m->getPromotionProductIds($id) : [];
+$moneyInputValue = static function (mixed $value): string {
+    $number = (float)($value ?? 0);
+    return $number > 0 ? number_format($number, 0, ',', '.') . ' đ' : '';
+};
 ?>
 
 <div class="d-flex align-items-center gap-3 mb-4">
@@ -40,7 +44,7 @@ $selected = $id ? $m->getPromotionProductIds($id) : [];
     </a>
     <div>
         <h1 class="mb-0"><?= $km ? 'Sửa khuyến mãi' : 'Thêm khuyến mãi' ?></h1>
-        <p class="text-muted mb-0">Tick sản phẩm được áp dụng khuyến mãi.</p>
+        <p class="text-muted mb-0">Tạo mã giảm giá cho trang thanh toán hoặc giảm giá theo sản phẩm.</p>
     </div>
 </div>
 
@@ -58,12 +62,59 @@ $selected = $id ? $m->getPromotionProductIds($id) : [];
                        placeholder="VD: Sale tháng 5">
             </div>
 
-            <div class="mb-3">
-                <label class="form-label">Phần trăm giảm (%) <span class="text-danger">*</span></label>
-                <input name="phan_tram_giam" type="number" min="0" max="100" step="0.01"
-                       class="form-control" required
-                       value="<?= h($km['phan_tram_giam'] ?? 0) ?>">
-            </div>
+<div class="mb-3">
+    <label class="form-label">Mã giảm giá</label>
+    <input name="ma_code" class="form-control"
+           value="<?= h($km['ma_code'] ?? '') ?>"
+           placeholder="VD: SALE50, PHONE600">
+</div>
+
+<div class="form-check form-switch mb-3">
+    <input class="form-check-input" type="checkbox" role="switch"
+           id="hienThiCheckout" name="hien_thi_checkout" value="1"
+           <?= (int)($km['hien_thi_checkout'] ?? 1) === 1 ? 'checked' : '' ?>>
+    <label class="form-check-label fw-600" for="hienThiCheckout">
+        Hiển thị mã này ở trang thanh toán
+    </label>
+    <small class="text-muted d-block">
+        Tắt mục này thì mã sẽ bị ẩn, người dùng phải nhập đúng mã mới thấy và áp dụng.
+    </small>
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Kiểu giảm</label>
+    <select name="kieu_giam" id="promotionDiscountType" class="form-select">
+        <option value="phan_tram" <?= ($km['kieu_giam'] ?? 'phan_tram') === 'phan_tram' ? 'selected' : '' ?>>
+            Giảm theo phần trăm sản phẩm
+        </option>
+        <option value="tien_mat" <?= ($km['kieu_giam'] ?? '') === 'tien_mat' ? 'selected' : '' ?>>
+            Mã giảm tiền khi thanh toán
+        </option>
+    </select>
+</div>
+
+<div class="mb-3" id="percentDiscountField">
+    <label class="form-label">Phần trăm giảm (%)</label>
+    <input name="phan_tram_giam" type="number" min="0" max="100" step="0.01"
+           class="form-control"
+           value="<?= h($km['phan_tram_giam'] ?? 0) ?>">
+</div>
+
+<div class="mb-3" id="cashDiscountField">
+    <label class="form-label">Số tiền giảm</label>
+    <input name="so_tien_giam" type="text" inputmode="numeric"
+           class="form-control js-vnd-input"
+           value="<?= h($moneyInputValue($km['so_tien_giam'] ?? 0)) ?>"
+           placeholder="VD: 50.000 đ">
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Đơn tối thiểu</label>
+    <input name="don_toi_thieu" type="text" inputmode="numeric"
+           class="form-control js-vnd-input"
+           value="<?= h($moneyInputValue($km['don_toi_thieu'] ?? 0)) ?>"
+           placeholder="VD: 100.000 đ">
+</div>
 
             <div class="mb-3">
                 <label class="form-label">Ngày bắt đầu <span class="text-danger">*</span></label>
@@ -122,5 +173,48 @@ $selected = $id ? $m->getPromotionProductIds($id) : [];
         <a href="<?= BASE_URL ?>/admin/promotions.php" class="btn btn-outline-secondary btn-lg">Hủy</a>
     </div>
 </form>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const typeSelect = document.getElementById('promotionDiscountType');
+    const percentField = document.getElementById('percentDiscountField');
+    const cashField = document.getElementById('cashDiscountField');
+    const percentInput = percentField.querySelector('input');
+    const cashInput = cashField.querySelector('input');
+    const moneyInputs = document.querySelectorAll('.js-vnd-input');
+
+    function formatVndInput(input) {
+        const rawValue = input.value.replace(/[^\d]/g, '');
+
+        if (!rawValue) {
+            input.value = '';
+            return;
+        }
+
+        input.value = new Intl.NumberFormat('vi-VN').format(Number(rawValue)) + ' đ';
+    }
+
+    function syncDiscountFields() {
+        const isCashDiscount = typeSelect.value === 'tien_mat';
+
+        percentField.style.display = isCashDiscount ? 'none' : '';
+        cashField.style.display = isCashDiscount ? '' : 'none';
+
+        percentInput.disabled = isCashDiscount;
+        cashInput.disabled = !isCashDiscount;
+    }
+
+    typeSelect.addEventListener('change', syncDiscountFields);
+    moneyInputs.forEach(function (input) {
+        input.addEventListener('blur', function () {
+            formatVndInput(input);
+        });
+        input.addEventListener('focus', function () {
+            input.value = input.value.replace(/[^\d]/g, '');
+        });
+    });
+    syncDiscountFields();
+});
+</script>
 
 <?php require __DIR__ . '/_layout_end.php'; ?>

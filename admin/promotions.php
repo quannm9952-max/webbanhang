@@ -23,10 +23,13 @@ $promotions = $m->promotions();
     <table class="table align-middle">
         <thead>
             <tr>
+                <th>Mã</th>
                 <th>Tên khuyến mãi</th>
+                <th>Kiểu giảm</th>
                 <th>Giảm</th>
-                <th>Ngày bắt đầu</th>
+                <th>Đơn tối thiểu</th>
                 <th>Ngày kết thúc</th>
+                <th>Hiện checkout</th>
                 <th>Trạng thái</th>
                 <th class="text-end">Thao tác</th>
             </tr>
@@ -34,10 +37,27 @@ $promotions = $m->promotions();
         <tbody>
             <?php foreach ($promotions as $km): ?>
             <tr>
+                <td class="fw-bold"><?= h($km['ma_code'] ?? '-') ?></td>
                 <td class="fw-600"><?= h($km['ten_khuyen_mai']) ?></td>
-                <td class="text-danger fw-bold">-<?= h($km['phan_tram_giam']) ?>%</td>
-                <td><?= h($km['ngay_bat_dau']) ?></td>
+                <td>
+                    <?= ($km['kieu_giam'] ?? 'phan_tram') === 'tien_mat' ? 'Giảm tiền' : 'Giảm %' ?>
+                </td>
+                <td class="text-danger fw-bold">
+                    <?php if (($km['kieu_giam'] ?? 'phan_tram') === 'tien_mat'): ?>
+                        -<?= number_format((float)$km['so_tien_giam'], 0, ',', '.') ?>đ
+                    <?php else: ?>
+                        -<?= h($km['phan_tram_giam']) ?>%
+                    <?php endif; ?>
+                </td>
+                <td><?= number_format((float)($km['don_toi_thieu'] ?? 0), 0, ',', '.') ?>đ</td>
                 <td><?= h($km['ngay_ket_thuc']) ?></td>
+                <td>
+                    <?php if ((int)($km['hien_thi_checkout'] ?? 1) === 1): ?>
+                        <span class="badge bg-primary">Hiện</span>
+                    <?php else: ?>
+                        <span class="badge bg-secondary">Ẩn, nhập mã</span>
+                    <?php endif; ?>
+                </td>
                 <td>
                     <?php if (($km['trang_thai'] ?? '') === 'dang_dien_ra'): ?>
                         <span class="badge bg-success">Đang diễn ra</span>
@@ -64,7 +84,7 @@ $promotions = $m->promotions();
 
             <?php if (empty($promotions)): ?>
             <tr>
-                <td colspan="6" class="text-center text-muted py-5">Chưa có khuyến mãi nào.</td>
+                <td colspan="9" class="text-center text-muted py-5">Chưa có khuyến mãi nào.</td>
             </tr>
             <?php endif; ?>
         </tbody>
