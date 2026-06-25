@@ -28,12 +28,13 @@ class OrderController
         }
 
         $order = new Order($this->pdo);
+        $total = $cart->getTotalPrice();
 
         $user = (new User($this->pdo))->findById((int)$_SESSION['id_nguoi_dung']);
 
         return [
             'items' => $items,
-            'total' => $cart->getTotalPrice(),
+            'total' => $total,
             'methods' => $order->getPaymentMethods(),
             'error' => flash('error'),
             'user'  => $user,

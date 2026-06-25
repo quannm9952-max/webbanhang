@@ -96,9 +96,9 @@ function order_status_label(string $status): array
                         <td class="text-end">
                             <div class="d-inline-flex gap-2">
                                 <?php if (in_array($o['trang_thai_don_hang'], ['cho_xac_nhan', 'da_xac_nhan'], true)): ?>
-                                <form method="post" class="m-0 p-0 cancel-order-form">
+                                <form method="post" class="m-0 p-0 cancel-order-form" action="<?= BASE_URL ?>/my_orders.php" novalidate>
                                     <input type="hidden" name="cancel_order_id" value="<?= (int)$o['id_don_hang'] ?>">
-                                    <button type="button" class="btn btn-sm btn-outline-danger btn-cancel-order">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger btn-cancel-order">
                                         <i class="bi bi-x-circle me-1"></i>Hủy
                                     </button>
                                 </form>
@@ -144,7 +144,9 @@ document.addEventListener('DOMContentLoaded', function () {
         
         document.querySelectorAll('.btn-cancel-order').forEach(btn => {
             btn.addEventListener('click', function(e) {
+                e.preventDefault();
                 const form = this.closest('form');
+                if (!form) return;
                 if (typeof Swal !== 'undefined') {
                     Swal.fire({
                         title: 'Xác nhận hủy đơn',

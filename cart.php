@@ -9,17 +9,10 @@ $data = $controller->pageData();
 $items = $data['items'];
 $total = $data['total'];
 
-$page_title = 'Giỏ hàng — TechShop';
+$page_title = 'Giỏ hàng - TechShop';
 require __DIR__ . '/includes/header.php';
 ?>
 <main class="container py-4">
-    <nav aria-label="breadcrumb" class="mb-3">
-        <ol class="breadcrumb" style="font-size:13px">
-            <li class="breadcrumb-item"><a href="<?= BASE_URL ?>/shop.php">Cửa hàng</a></li>
-            <li class="breadcrumb-item active">Giỏ hàng</li>
-        </ol>
-    </nav>
-
     <div class="section-heading mb-4">
         <i class="bi bi-cart3 me-2"></i>Giỏ hàng của bạn
         <span class="text-muted fw-normal ms-2" style="font-size:14px">(<?= count($items) ?> sản phẩm)</span>
@@ -36,7 +29,7 @@ require __DIR__ . '/includes/header.php';
         </div>
     <?php else: ?>
     <div class="row g-4">
-        <div class="col-lg-8">
+        <div class="col-xl-8">
             <div class="bg-white rounded-4 shadow-sm overflow-hidden">
                 <?php foreach ($items as $i): ?>
                 <div class="cart-item-row">
@@ -65,9 +58,9 @@ require __DIR__ . '/includes/header.php';
             </div>
         </div>
 
-        <div class="col-lg-4">
+        <div class="col-xl-4">
             <div class="cart-summary-card">
-                <h5 class="fw-800 mb-3"><i class="bi bi-receipt me-2 text-primary"></i>Tóm tắt đơn hàng</h5>
+                <h5 class="fw-800 mb-3"><i class="bi bi-receipt me-2 text-primary"></i>Tổng đơn hàng</h5>
                 <div class="d-flex justify-content-between mb-2">
                     <span class="text-muted">Tạm tính</span>
                     <span class="fw-700"><?= format_price($total) ?></span>
@@ -92,5 +85,4 @@ require __DIR__ . '/includes/header.php';
     </div>
     <?php endif; ?>
 </main>
-
 <?php require __DIR__ . '/includes/footer.php'; ?>

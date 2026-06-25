@@ -12,11 +12,10 @@ $methods = $data['methods'];
 $error = $data['error'];
 $user_info = $data['user'];
 
-$page_title = 'Thanh toán — TechShop';
+$page_title = 'Thanh toán - TechShop';
 require __DIR__ . '/includes/header.php';
 ?>
 <main class="container py-4">
-    <!-- Breadcrumb -->
     <nav aria-label="breadcrumb" class="mb-3">
         <ol class="breadcrumb" style="font-size:13px">
             <li class="breadcrumb-item"><a href="<?= BASE_URL ?>/shop.php">Cửa hàng</a></li>
@@ -38,9 +37,7 @@ require __DIR__ . '/includes/header.php';
 
     <form method="post">
         <div class="row g-4">
-            <!-- Left: Shipping + Payment -->
             <div class="col-lg-7">
-                <!-- Shipping Info -->
                 <div class="checkout-section mb-4">
                     <h5><i class="bi bi-geo-alt me-2 text-primary"></i>Thông tin giao hàng</h5>
                     <div class="row g-3">
@@ -70,7 +67,6 @@ require __DIR__ . '/includes/header.php';
                     </div>
                 </div>
 
-                <!-- Payment Methods -->
                 <div class="checkout-section">
                     <h5><i class="bi bi-wallet2 me-2 text-primary"></i>Phương thức thanh toán</h5>
                     <?php foreach ($methods as $k => $m): ?>
@@ -90,7 +86,6 @@ require __DIR__ . '/includes/header.php';
                 </div>
             </div>
 
-            <!-- Right: Order Summary -->
             <div class="col-lg-5">
                 <div class="cart-summary-card" style="position:sticky;top:100px">
                     <h5 class="fw-800 mb-4">
@@ -120,9 +115,12 @@ require __DIR__ . '/includes/header.php';
                         <span class="text-muted">Phí vận chuyển</span>
                         <span class="text-success fw-600">Miễn phí</span>
                     </div>
+
                     <div class="d-flex justify-content-between mb-4">
                         <span class="fw-800" style="font-size:16px">Tổng thanh toán</span>
-                        <span class="fw-800 text-primary" style="font-size:22px"><?= format_price($total) ?></span>
+                        <span class="fw-800 text-primary" style="font-size:22px">
+                            <?= format_price($total) ?>
+                        </span>
                     </div>
 
                     <button type="submit" class="btn btn-primary btn-lg w-100">

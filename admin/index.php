@@ -11,86 +11,71 @@ $products = (int)$pdo->query("SELECT COUNT(*) FROM san_pham")->fetchColumn();
 $users    = (int)$pdo->query("SELECT COUNT(*) FROM nguoi_dung")->fetchColumn();
 ?>
 
-<h1 class="mb-4">Dashboard</h1>
+<section class="admin-dashboard">
+    <div class="dashboard-heading">
+        <h1>Dashboard</h1>
+        <p>Tổng quan hệ thống</p>
+    </div>
 
-<!-- Stat Cards -->
-<div class="row g-4 mb-5">
-    <div class="col-md-3 col-6">
-        <div class="bg-white p-4 rounded-4 shadow-sm text-center">
-            <div class="mb-2" style="font-size:32px;color:#0ea5e9">
-                <i class="bi bi-box-seam"></i>
+    <div class="dashboard-stats">
+        <article class="dashboard-stat-card">
+            <div class="dashboard-stat-label">
+                <span class="dashboard-stat-icon icon-cyan"><i class="bi bi-receipt"></i></span>
+                <span>Tổng đơn hàng</span>
             </div>
-            <p class="text-muted mb-1" style="font-size:13px">Tổng đơn hàng</p>
-            <h3 class="fw-800 mb-0"><?= $s['totalOrders'] ?></h3>
-        </div>
-    </div>
-    <div class="col-md-3 col-6">
-        <div class="bg-white p-4 rounded-4 shadow-sm text-center">
-            <div class="mb-2" style="font-size:32px;color:#22c55e">
-                <i class="bi bi-cash-coin"></i>
-            </div>
-            <p class="text-muted mb-1" style="font-size:13px">Doanh thu (Đã giao)</p>
-            <h3 class="fw-800 mb-0" style="font-size:20px"><?= format_price($s['revenue']) ?></h3>
-        </div>
-    </div>
-    <div class="col-md-3 col-6">
-        <div class="bg-white p-4 rounded-4 shadow-sm text-center">
-            <div class="mb-2" style="font-size:32px;color:#f59e0b">
-                <i class="bi bi-clock-history"></i>
-            </div>
-            <p class="text-muted mb-1" style="font-size:13px">Chờ xác nhận</p>
-            <h3 class="fw-800 mb-0"><?= $s['pending'] ?></h3>
-        </div>
-    </div>
-    <div class="col-md-3 col-6">
-        <div class="bg-white p-4 rounded-4 shadow-sm text-center">
-            <div class="mb-2" style="font-size:32px;color:#8b5cf6">
-                <i class="bi bi-grid"></i>
-            </div>
-            <p class="text-muted mb-1" style="font-size:13px">Sản phẩm</p>
-            <h3 class="fw-800 mb-0"><?= $products ?></h3>
-        </div>
-    </div>
-    <div class="col-md-3 col-6">
-        <div class="bg-white p-4 rounded-4 shadow-sm text-center">
-            <div class="mb-2" style="font-size:32px;color:#ec4899">
-                <i class="bi bi-people"></i>
-            </div>
-            <p class="text-muted mb-1" style="font-size:13px">Người dùng</p>
-            <h3 class="fw-800 mb-0"><?= $users ?></h3>
-        </div>
-    </div>
-</div>
+            <strong><?= (int)$s['totalOrders'] ?></strong>
+            <small class="stat-info">Tất cả đơn</small>
+        </article>
 
-<!-- Quick Links -->
-<div class="row g-3">
-    <div class="col-12">
-        <h5 class="fw-700 mb-3">Truy cập nhanh</h5>
+        <article class="dashboard-stat-card">
+            <div class="dashboard-stat-label">
+                <span class="dashboard-stat-icon icon-orange"><i class="bi bi-cash-coin"></i></span>
+                <span>Tổng doanh thu</span>
+            </div>
+            <strong><?= format_price($s['revenue']) ?></strong>
+            <small class="stat-up">Đã giao</small>
+        </article>
+
+        <article class="dashboard-stat-card">
+            <div class="dashboard-stat-label">
+                <span class="dashboard-stat-icon icon-blue"><i class="bi bi-box-seam"></i></span>
+                <span>Sản phẩm</span>
+            </div>
+            <strong><?= $products ?></strong>
+            <small class="stat-info">Đang quản lý</small>
+        </article>
+
+        <article class="dashboard-stat-card">
+            <div class="dashboard-stat-label">
+                <span class="dashboard-stat-icon icon-indigo"><i class="bi bi-people-fill"></i></span>
+                <span>Khách hàng</span>
+            </div>
+            <strong><?= $users ?></strong>
+            <small class="stat-up">Tài khoản</small>
+        </article>
     </div>
-    <div class="col-md-3 col-6">
-        <a href="<?= BASE_URL ?>/admin/orders.php" class="bg-white p-4 rounded-4 shadow-sm d-flex align-items-center gap-3 text-decoration-none text-dark">
-            <i class="bi bi-box-seam text-primary" style="font-size:24px"></i>
-            <span class="fw-600">Quản lý đơn hàng</span>
-        </a>
+
+    <div class="dashboard-quick">
+        <h2>Truy cập nhanh</h2>
+        <div class="dashboard-quick-grid">
+            <a href="<?= BASE_URL ?>/admin/orders.php" class="dashboard-quick-card">
+                <i class="bi bi-box-seam text-primary"></i>
+                <span>Quản lý đơn hàng</span>
+            </a>
+            <a href="<?= BASE_URL ?>/admin/products.php" class="dashboard-quick-card">
+                <i class="bi bi-grid text-purple"></i>
+                <span>Quản lý sản phẩm</span>
+            </a>
+            <a href="<?= BASE_URL ?>/admin/users.php" class="dashboard-quick-card">
+                <i class="bi bi-people text-success"></i>
+                <span>Quản lý người dùng</span>
+            </a>
+            <a href="<?= BASE_URL ?>/admin/product_form.php" class="dashboard-quick-card">
+                <i class="bi bi-plus-circle text-warning"></i>
+                <span>Thêm sản phẩm</span>
+            </a>
+        </div>
     </div>
-    <div class="col-md-3 col-6">
-        <a href="<?= BASE_URL ?>/admin/products.php" class="bg-white p-4 rounded-4 shadow-sm d-flex align-items-center gap-3 text-decoration-none text-dark">
-            <i class="bi bi-grid text-purple" style="font-size:24px;color:#8b5cf6"></i>
-            <span class="fw-600">Quản lý sản phẩm</span>
-        </a>
-    </div>
-    <div class="col-md-3 col-6">
-        <a href="<?= BASE_URL ?>/admin/users.php" class="bg-white p-4 rounded-4 shadow-sm d-flex align-items-center gap-3 text-decoration-none text-dark">
-            <i class="bi bi-people text-success" style="font-size:24px;color:#22c55e"></i>
-            <span class="fw-600">Quản lý người dùng</span>
-        </a>
-    </div>
-    <div class="col-md-3 col-6">
-        <a href="<?= BASE_URL ?>/admin/product_form.php" class="bg-white p-4 rounded-4 shadow-sm d-flex align-items-center gap-3 text-decoration-none text-dark">
-            <i class="bi bi-plus-circle text-warning" style="font-size:24px;color:#f59e0b"></i>
-            <span class="fw-600">Thêm sản phẩm</span>
-        </a>
-    </div>
-</div>
+</section>
 
 <?php require __DIR__ . '/_layout_end.php'; ?>

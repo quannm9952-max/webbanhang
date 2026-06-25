@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+
 class Order
 {
     public function __construct(private PDO $pdo) {}
