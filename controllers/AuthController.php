@@ -26,7 +26,7 @@ class AuthController
 
         if ($email === '' || $password === '') {
             $_SESSION['error'] = 'Vui lòng nhập email và mật khẩu.';
-            $_SESSION['_old_login'] = ['email' => $email];
+            $_SESSION['_old'] = ['email' => $email];
             redirect('login.php');
         }
 
@@ -34,20 +34,20 @@ class AuthController
 
         if (!$user || !password_verify($password, (string)$user['mat_khau'])) {
             $_SESSION['error'] = 'Email hoặc mật khẩu không chính xác.';
-            $_SESSION['_old_login'] = ['email' => $email];
+            $_SESSION['_old'] = ['email' => $email];
             redirect('login.php');
         }
 
         if (($user['trang_thai'] ?? '') !== 'hoat_dong') {
             $_SESSION['error'] = 'Tài khoản của bạn đã bị khóa. Vui lòng liên hệ hỗ trợ.';
-            $_SESSION['_old_login'] = ['email' => $email];
+            $_SESSION['_old'] = ['email' => $email];
             redirect('login.php');
         }
 
         create_login_session($user);
 
         $redirectTo = $_SESSION['redirect_after_login'] ?? 'shop.php';
-        unset($_SESSION['redirect_after_login'], $_SESSION['_old_login']);
+        unset($_SESSION['redirect_after_login'], $_SESSION['_old']);
 
         header('Location: ' . $redirectTo);
         exit;

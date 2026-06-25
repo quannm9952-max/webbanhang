@@ -8,9 +8,24 @@ $m = new AdminCatalog($pdo);
 $id = (int)($_GET['id'] ?? 0);
 $km = $id ? $m->findPromotion($id) : null;
 
+$combineDateTime = static function (string $dateKey, string $timeKey, string $label): string {
+    $value = trim((string)($_POST[$dateKey] ?? '')) . ' ' . trim((string)($_POST[$timeKey] ?? ''));
+    $date = DateTime::createFromFormat('Y-m-d H:i', $value);
+    $errors = DateTime::getLastErrors();
+
+    if (!$date || ($errors && ($errors['warning_count'] > 0 || $errors['error_count'] > 0))) {
+        throw new Exception($label . ' không hợp lệ.');
+    }
+
+    return $date->format('Y-m-d H:i:s');
+};
+
 if (is_post()) {
     try {
         $pdo->beginTransaction();
+
+        $_POST['ngay_bat_dau'] = $combineDateTime('ngay_bat_dau_date', 'ngay_bat_dau_time', 'Ngày bắt đầu');
+        $_POST['ngay_ket_thuc'] = $combineDateTime('ngay_ket_thuc_date', 'ngay_ket_thuc_time', 'Ngày kết thúc');
 
         $m->savePromotion($_POST, $id);
         $promotionId = $id ?: (int)$pdo->lastInsertId();
@@ -36,6 +51,11 @@ $moneyInputValue = static function (mixed $value): string {
     $number = (float)($value ?? 0);
     return $number > 0 ? number_format($number, 0, ',', '.') . ' đ' : '';
 };
+
+$startDate = $_POST['ngay_bat_dau_date'] ?? (!empty($km['ngay_bat_dau']) ? date('Y-m-d', strtotime((string)$km['ngay_bat_dau'])) : date('Y-m-d'));
+$startTime = $_POST['ngay_bat_dau_time'] ?? (!empty($km['ngay_bat_dau']) ? date('H:i', strtotime((string)$km['ngay_bat_dau'])) : date('H:i'));
+$endDate = $_POST['ngay_ket_thuc_date'] ?? (!empty($km['ngay_ket_thuc']) ? date('Y-m-d', strtotime((string)$km['ngay_ket_thuc'])) : date('Y-m-d'));
+$endTime = $_POST['ngay_ket_thuc_time'] ?? (!empty($km['ngay_ket_thuc']) ? date('H:i', strtotime((string)$km['ngay_ket_thuc'])) : date('H:i', strtotime('+7 days')));
 ?>
 
 <div class="d-flex align-items-center gap-3 mb-4">
@@ -52,7 +72,7 @@ $moneyInputValue = static function (mixed $value): string {
     <div class="alert alert-danger"><?= h($error) ?></div>
 <?php endif; ?>
 
-<form method="post" class="bg-white p-4 rounded-4 shadow-sm">
+<form method="post" class="bg-white p-4 rounded-4 shadow-sm" data-promotion-form>
     <div class="row g-4">
         <div class="col-lg-6">
             <div class="mb-3">
@@ -62,70 +82,88 @@ $moneyInputValue = static function (mixed $value): string {
                        placeholder="VD: Sale tháng 5">
             </div>
 
-<div class="mb-3">
-    <label class="form-label">Mã giảm giá</label>
-    <input name="ma_code" class="form-control"
-           value="<?= h($km['ma_code'] ?? '') ?>"
-           placeholder="VD: SALE50, PHONE600">
-</div>
-
-<div class="form-check form-switch mb-3">
-    <input class="form-check-input" type="checkbox" role="switch"
-           id="hienThiCheckout" name="hien_thi_checkout" value="1"
-           <?= (int)($km['hien_thi_checkout'] ?? 1) === 1 ? 'checked' : '' ?>>
-    <label class="form-check-label fw-600" for="hienThiCheckout">
-        Hiển thị mã này ở trang thanh toán
-    </label>
-    <small class="text-muted d-block">
-        Tắt mục này thì mã sẽ bị ẩn, người dùng phải nhập đúng mã mới thấy và áp dụng.
-    </small>
-</div>
-
-<div class="mb-3">
-    <label class="form-label">Kiểu giảm</label>
-    <select name="kieu_giam" id="promotionDiscountType" class="form-select">
-        <option value="phan_tram" <?= ($km['kieu_giam'] ?? 'phan_tram') === 'phan_tram' ? 'selected' : '' ?>>
-            Giảm theo phần trăm sản phẩm
-        </option>
-        <option value="tien_mat" <?= ($km['kieu_giam'] ?? '') === 'tien_mat' ? 'selected' : '' ?>>
-            Mã giảm tiền khi thanh toán
-        </option>
-    </select>
-</div>
-
-<div class="mb-3" id="percentDiscountField">
-    <label class="form-label">Phần trăm giảm (%)</label>
-    <input name="phan_tram_giam" type="number" min="0" max="100" step="0.01"
-           class="form-control"
-           value="<?= h($km['phan_tram_giam'] ?? 0) ?>">
-</div>
-
-<div class="mb-3" id="cashDiscountField">
-    <label class="form-label">Số tiền giảm</label>
-    <input name="so_tien_giam" type="text" inputmode="numeric"
-           class="form-control js-vnd-input"
-           value="<?= h($moneyInputValue($km['so_tien_giam'] ?? 0)) ?>"
-           placeholder="VD: 50.000 đ">
-</div>
-
-<div class="mb-3">
-    <label class="form-label">Đơn tối thiểu</label>
-    <input name="don_toi_thieu" type="text" inputmode="numeric"
-           class="form-control js-vnd-input"
-           value="<?= h($moneyInputValue($km['don_toi_thieu'] ?? 0)) ?>"
-           placeholder="VD: 100.000 đ">
-</div>
-
             <div class="mb-3">
-                <label class="form-label">Ngày bắt đầu <span class="text-danger">*</span></label>
-                <input name="ngay_bat_dau" type="datetime-local" class="form-control" required
-                       value="<?= !empty($km['ngay_bat_dau']) ? date('Y-m-d\TH:i', strtotime($km['ngay_bat_dau'])) : '' ?>">
+                <label class="form-label">Mã giảm giá</label>
+                <input name="ma_code" class="form-control"
+                       value="<?= h($km['ma_code'] ?? '') ?>"
+                       placeholder="VD: SALE50, PHONE600">
+            </div>
+
+            <div class="form-check form-switch mb-3">
+                <input class="form-check-input" type="checkbox" role="switch"
+                       id="hienThiCheckout" name="hien_thi_checkout" value="1"
+                       <?= (int)($km['hien_thi_checkout'] ?? 1) === 1 ? 'checked' : '' ?>>
+                <label class="form-check-label fw-600" for="hienThiCheckout">
+                    Hiển thị mã này ở trang thanh toán
+                </label>
+                <small class="text-muted d-block">
+                    Tắt mục này thì mã sẽ bị ẩn, người dùng phải nhập đúng mã mới thấy và áp dụng.
+                </small>
             </div>
 
             <div class="mb-3">
-                <label class="form-label">Ngày kết thúc <span class="text-danger">*</span></label>
-                <input name="ngay_ket_thuc" type="datetime-local" class="form-control" required
-                       value="<?= !empty($km['ngay_ket_thuc']) ? date('Y-m-d\TH:i', strtotime($km['ngay_ket_thuc'])) : '' ?>">
+                <label class="form-label">Kiểu giảm</label>
+                <select name="kieu_giam" id="promotionDiscountType" class="form-select">
+                    <option value="phan_tram" <?= ($km['kieu_giam'] ?? 'phan_tram') === 'phan_tram' ? 'selected' : '' ?>>
+                        Giảm theo phần trăm sản phẩm
+                    </option>
+                    <option value="tien_mat" <?= ($km['kieu_giam'] ?? '') === 'tien_mat' ? 'selected' : '' ?>>
+                        Mã giảm tiền khi thanh toán
+                    </option>
+                </select>
+            </div>
+
+            <div class="mb-3" id="percentDiscountField">
+                <label class="form-label">Phần trăm giảm (%)</label>
+                <input name="phan_tram_giam" type="number" min="0" max="100" step="0.01"
+                       class="form-control"
+                       value="<?= h($km['phan_tram_giam'] ?? 0) ?>">
+            </div>
+
+            <div class="mb-3" id="cashDiscountField">
+                <label class="form-label">Số tiền giảm</label>
+                <input name="so_tien_giam" type="text" inputmode="numeric"
+                       class="form-control js-vnd-input"
+                       value="<?= h($moneyInputValue($km['so_tien_giam'] ?? 0)) ?>"
+                       placeholder="VD: 50.000 đ">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Đơn tối thiểu</label>
+                <input name="don_toi_thieu" type="text" inputmode="numeric"
+                       class="form-control js-vnd-input"
+                       value="<?= h($moneyInputValue($km['don_toi_thieu'] ?? 0)) ?>"
+                       placeholder="VD: 100.000 đ">
+            </div>
+
+            <div class="row g-3 mb-3">
+                <div class="col-md-7">
+                    <label class="form-label">Ngày bắt đầu <span class="text-danger">*</span></label>
+                    <input name="ngay_bat_dau_date" type="date" class="form-control" required
+                           value="<?= h($startDate) ?>">
+                </div>
+                <div class="col-md-5">
+                    <label class="form-label">Giờ bắt đầu <span class="text-danger">*</span></label>
+                    <input name="ngay_bat_dau_time" type="text" class="form-control"
+                           value="<?= h($startTime) ?>" placeholder="HH:mm" inputmode="numeric" maxlength="5"
+                           pattern="^([01][0-9]|2[0-3]):[0-5][0-9]$" data-time-mask required>
+                    <div class="invalid-feedback">Giờ không hợp lệ. Vui lòng nhập theo dạng 00:00 đến 23:59.</div>
+                </div>
+            </div>
+
+            <div class="row g-3 mb-3">
+                <div class="col-md-7">
+                    <label class="form-label">Ngày kết thúc <span class="text-danger">*</span></label>
+                    <input name="ngay_ket_thuc_date" type="date" class="form-control" required
+                           value="<?= h($endDate) ?>">
+                </div>
+                <div class="col-md-5">
+                    <label class="form-label">Giờ kết thúc <span class="text-danger">*</span></label>
+                    <input name="ngay_ket_thuc_time" type="text" class="form-control"
+                           value="<?= h($endTime) ?>" placeholder="HH:mm" inputmode="numeric" maxlength="5"
+                           pattern="^([01][0-9]|2[0-3]):[0-5][0-9]$" data-time-mask required>
+                    <div class="invalid-feedback">Giờ không hợp lệ. Vui lòng nhập theo dạng 00:00 đến 23:59.</div>
+                </div>
             </div>
 
             <div class="mb-3">
@@ -214,6 +252,65 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
     syncDiscountFields();
+});
+
+document.querySelectorAll('[data-time-mask]').forEach(function (input) {
+    const timePattern = /^([01][0-9]|2[0-3]):[0-5][0-9]$/;
+    const invalidMessage = 'Giờ không hợp lệ. Vui lòng nhập theo dạng 00:00 đến 23:59.';
+
+    input.dataset.lastAccepted = timePattern.test(input.value) ? input.value : '';
+
+    const formatDigits = function (digits) {
+        return digits.length >= 3 ? digits.slice(0, 2) + ':' + digits.slice(2) : digits;
+    };
+
+    const isValidPartial = function (digits) {
+        if (digits.length >= 2 && Number(digits.slice(0, 2)) > 23) {
+            return false;
+        }
+        if (digits.length === 4 && Number(digits.slice(2, 4)) > 59) {
+            return false;
+        }
+        return true;
+    };
+
+    const markValidity = function () {
+        const isValid = timePattern.test(input.value);
+        input.setCustomValidity(isValid ? '' : invalidMessage);
+        return isValid;
+    };
+
+    input.addEventListener('input', function () {
+        const digits = input.value.replace(/\D/g, '').slice(0, 4);
+
+        if (!isValidPartial(digits)) {
+            input.value = input.dataset.lastAccepted || '';
+            input.classList.add('is-invalid');
+            input.setCustomValidity(invalidMessage);
+            return;
+        }
+
+        input.value = formatDigits(digits);
+        input.dataset.lastAccepted = input.value;
+        input.classList.toggle('is-invalid', digits.length === 4 && !timePattern.test(input.value));
+        markValidity();
+    });
+
+    input.addEventListener('blur', function () {
+        input.classList.toggle('is-invalid', !markValidity());
+    });
+});
+
+document.querySelector('[data-promotion-form]')?.addEventListener('submit', function (event) {
+    const invalidTime = Array.from(this.querySelectorAll('[data-time-mask]'))
+        .find(input => !input.checkValidity());
+
+    if (invalidTime) {
+        event.preventDefault();
+        invalidTime.classList.add('is-invalid');
+        invalidTime.focus();
+        invalidTime.reportValidity();
+    }
 });
 </script>
 

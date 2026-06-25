@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../models/Cart.php';
 require_once __DIR__ . '/../models/Order.php';
-require_once __DIR__ . '/../models/Promotion.php';
 require_once __DIR__ . '/../models/User.php';
 
 class OrderController
@@ -36,7 +35,6 @@ class OrderController
         return [
             'items' => $items,
             'total' => $total,
-            'checkoutPromotions' => (new Promotion($this->pdo))->visibleCheckoutPromotions($total),
             'methods' => $order->getPaymentMethods(),
             'error' => flash('error'),
             'user'  => $user,

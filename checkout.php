@@ -11,13 +11,11 @@ $total = $data['total'];
 $methods = $data['methods'];
 $error = $data['error'];
 $user_info = $data['user'];
-$checkoutPromotions = $data['checkoutPromotions'];
 
-$page_title = 'Thanh toán — TechShop';
+$page_title = 'Thanh toán - TechShop';
 require __DIR__ . '/includes/header.php';
 ?>
 <main class="container py-4">
-    <!-- Breadcrumb -->
     <nav aria-label="breadcrumb" class="mb-3">
         <ol class="breadcrumb" style="font-size:13px">
             <li class="breadcrumb-item"><a href="<?= BASE_URL ?>/shop.php">Cửa hàng</a></li>
@@ -39,9 +37,7 @@ require __DIR__ . '/includes/header.php';
 
     <form method="post">
         <div class="row g-4">
-            <!-- Left: Shipping + Payment -->
             <div class="col-lg-7">
-                <!-- Shipping Info -->
                 <div class="checkout-section mb-4">
                     <h5><i class="bi bi-geo-alt me-2 text-primary"></i>Thông tin giao hàng</h5>
                     <div class="row g-3">
@@ -71,7 +67,6 @@ require __DIR__ . '/includes/header.php';
                     </div>
                 </div>
 
-                <!-- Payment Methods -->
                 <div class="checkout-section">
                     <h5><i class="bi bi-wallet2 me-2 text-primary"></i>Phương thức thanh toán</h5>
                     <?php foreach ($methods as $k => $m): ?>
@@ -91,18 +86,8 @@ require __DIR__ . '/includes/header.php';
                 </div>
             </div>
 
-            <!-- Right: Order Summary -->
             <div class="col-lg-5">
                 <div class="cart-summary-card" style="position:sticky;top:100px">
-                    <div class="promo-box" onclick="openPromoModal()">
-                        <div>
-                            <i class="bi bi-percent"></i>
-                            <span id="promoText">Chọn khuyến mãi và ưu đãi</span>
-                        </div>
-                        <i class="bi bi-chevron-right"></i>
-                    </div>
-
-                    <input type="hidden" name="promotion_code" id="promotionCode" value="">
                     <h5 class="fw-800 mb-4">
                         <i class="bi bi-receipt me-2 text-primary"></i>Đơn hàng của bạn
                     </h5>
@@ -130,14 +115,10 @@ require __DIR__ . '/includes/header.php';
                         <span class="text-muted">Phí vận chuyển</span>
                         <span class="text-success fw-600">Miễn phí</span>
                     </div>
-                    <div class="d-flex justify-content-between mb-2" style="font-size:14px">
-                        <span class="text-muted">Tổng khuyến mãi</span>
-                        <span class="fw-600 text-primary" id="discountShow">-0đ</span>
-                    </div>
 
                     <div class="d-flex justify-content-between mb-4">
                         <span class="fw-800" style="font-size:16px">Tổng thanh toán</span>
-                        <span class="fw-800 text-primary" style="font-size:22px" id="finalTotal">
+                        <span class="fw-800 text-primary" style="font-size:22px">
                             <?= format_price($total) ?>
                         </span>
                     </div>
@@ -169,213 +150,5 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 <?php endif; ?>
-<div class="promo-modal" id="promoModal">
-    <div class="promo-panel">
-        <div class="promo-header">
-            <h4>Khuyến mãi và ưu đãi</h4>
-            <button type="button" onclick="closePromoModal()">×</button>
-        </div>
-
-        <div class="promo-content">
-            <h6>Mã giảm giá</h6>
-
-            <div class="voucher-input">
-                <i class="bi bi-ticket-perforated"></i>
-                <input type="text" id="promoCodeInput" placeholder="Nhập mã giảm giá của bạn tại đây nhé" autocomplete="off">
-                <button type="button" onclick="lookupPromotionCode()">Áp dụng</button>
-            </div>
-            <div id="promoCodeMessage" class="promo-code-message"></div>
-
-            <h6 class="mt-4">Khuyến mãi</h6>
-
-            <div id="promoList">
-                <?php foreach ($checkoutPromotions as $promo): ?>
-                    <div class="promo-item <?= $promo['is_applicable'] ? '' : 'disabled' ?>"
-                         data-code="<?= h($promo['ma_code']) ?>"
-                         data-discount="<?= (float)$promo['discount_amount'] ?>"
-                         onclick="togglePromo(this)">
-                        <div class="promo-icon">%</div>
-                        <div>
-                            <b><?= h($promo['ten_khuyen_mai']) ?></b>
-                            <small>
-                                Mã: <?= h($promo['ma_code']) ?>
-                                <?php if ((float)$promo['don_toi_thieu'] > 0): ?>
-                                    - Đơn tối thiểu <?= format_price($promo['don_toi_thieu']) ?>
-                                <?php endif; ?>
-                                <?php if (!$promo['is_applicable']): ?>
-                                    - Chưa đủ điều kiện
-                                <?php endif; ?>
-                            </small>
-                        </div>
-                        <div class="promo-check">✓</div>
-                    </div>
-                <?php endforeach; ?>
-
-                <?php if (empty($checkoutPromotions)): ?>
-                    <p id="promoEmptyText" class="promo-empty">Không có mã hiển thị sẵn. Nhập mã giảm giá để kiểm tra.</p>
-                <?php endif; ?>
-            </div>
-        </div>
-
-        <div class="promo-footer">
-            <div class="promo-total">
-                <div id="promoFinalPrice" class="promo-total-price">
-                    <?= format_price($total) ?>
-                </div>
-                <small id="promoSaving" class="promo-total-saving">
-                        Tiết kiệm 0đ
-                </small>
-            </div>
-
-            <button type="button" class="promo-confirm-btn" onclick="confirmPromo()">
-                    Xác nhận
-            </button>
-        </div>
-    </div>
-</div>
-
-<script>
-const orderTotal = <?= (int)$total ?>;
-let selectedDiscount = 0;
-let selectedPromotionCode = '';
-
-function formatVnd(number) {
-    return new Intl.NumberFormat('vi-VN').format(number) + 'đ';
-}
-
-function openPromoModal() {
-    document.getElementById('promoModal').classList.add('show');
-}
-
-function closePromoModal() {
-    document.getElementById('promoModal').classList.remove('show');
-}
-
-function togglePromo(element) {
-    if (element.classList.contains('disabled')) {
-        return;
-    }
-
-    const wasActive = element.classList.contains('active');
-
-    document.querySelectorAll('.promo-item.active').forEach(item => {
-        item.classList.remove('active');
-    });
-
-    selectedDiscount = 0;
-    selectedPromotionCode = '';
-
-    if (!wasActive) {
-        element.classList.add('active');
-        selectedDiscount = Number(element.dataset.discount || 0);
-        selectedPromotionCode = element.dataset.code || '';
-    }
-
-    if (selectedDiscount < 0) selectedDiscount = 0;
-
-    let finalPrice = Math.max(orderTotal - selectedDiscount, 0);
-
-    document.getElementById('promoFinalPrice').innerText = formatVnd(finalPrice);
-    document.getElementById('promoSaving').innerText = 'Tiết kiệm ' + formatVnd(selectedDiscount);
-}
-
-function setPromoMessage(message, isError = false) {
-    const messageBox = document.getElementById('promoCodeMessage');
-    messageBox.innerText = message || '';
-    messageBox.classList.toggle('error', isError);
-}
-
-function appendPromotionItem(promotion) {
-    const list = document.getElementById('promoList');
-    const emptyText = document.getElementById('promoEmptyText');
-    const code = promotion.ma_code || '';
-    const existing = Array.from(list.querySelectorAll('.promo-item'))
-        .find(item => item.dataset.code === code);
-
-    if (emptyText) {
-        emptyText.remove();
-    }
-    if (existing) {
-        return existing;
-    }
-
-    const item = document.createElement('div');
-    item.className = 'promo-item' + (promotion.is_applicable ? '' : ' disabled');
-    item.dataset.code = code;
-    item.dataset.discount = promotion.discount_amount || 0;
-    item.onclick = function () {
-        togglePromo(item);
-    };
-
-    const icon = document.createElement('div');
-    icon.className = 'promo-icon';
-    icon.innerText = '%';
-
-    const body = document.createElement('div');
-    const title = document.createElement('b');
-    title.innerText = promotion.ten_khuyen_mai || code;
-    const note = document.createElement('small');
-    note.innerText = 'Mã: ' + code
-        + (Number(promotion.don_toi_thieu || 0) > 0 ? ' - Đơn tối thiểu ' + formatVnd(promotion.don_toi_thieu) : '')
-        + (!promotion.is_applicable ? ' - Chưa đủ điều kiện' : '');
-    body.append(title, note);
-
-    const check = document.createElement('div');
-    check.className = 'promo-check';
-    check.innerText = '✓';
-
-    item.append(icon, body, check);
-    list.prepend(item);
-    return item;
-}
-
-function lookupPromotionCode() {
-    const input = document.getElementById('promoCodeInput');
-    const code = input.value.trim();
-
-    if (!code) {
-        setPromoMessage('Vui lòng nhập mã giảm giá.', true);
-        return;
-    }
-
-    fetch('<?= BASE_URL ?>/ajax/promotion_lookup.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-        },
-        body: new URLSearchParams({ code })
-    })
-        .then(response => response.json())
-        .then(data => {
-            if (!data.success || !data.promotion) {
-                setPromoMessage(data.message || 'Mã giảm giá không hợp lệ.', true);
-                return;
-            }
-
-            const item = appendPromotionItem(data.promotion);
-            setPromoMessage(data.message || 'Đã tìm thấy mã giảm giá.', !data.promotion.is_applicable);
-
-            if (data.promotion.is_applicable) {
-                togglePromo(item);
-            }
-        })
-        .catch(() => {
-            setPromoMessage('Không thể kiểm tra mã giảm giá. Vui lòng thử lại.', true);
-        });
-}
-
-function confirmPromo() {
-    let finalPrice = Math.max(orderTotal - selectedDiscount, 0);
-
-    document.getElementById('promotionCode').value = selectedPromotionCode;
-    document.getElementById('discountShow').innerText = '-' + formatVnd(selectedDiscount);
-    document.getElementById('finalTotal').innerText = formatVnd(finalPrice);
-
-    document.getElementById('promoText').innerText =
-        selectedPromotionCode ? 'Đã chọn mã ' + selectedPromotionCode : 'Chọn khuyến mãi và ưu đãi';
-
-    closePromoModal();
-}
-</script>
 
 <?php require __DIR__ . '/includes/footer.php'; ?>
