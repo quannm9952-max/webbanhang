@@ -13,7 +13,7 @@ $success = flash('success');
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Đăng nhập — TechShop</title>
+    <title>Đăng nhập — SobaMobile</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
@@ -23,7 +23,7 @@ $success = flash('success');
 <div class="auth-card">
     <a href="<?= BASE_URL ?>/shop.php" class="brand-logo">
         <span class="brand-icon">T</span>
-        <span>Tech<span>Shop</span></span>
+        <span>Soba<span>Mobile</span></span>
     </a>
 
     <h2>Đăng nhập</h2>

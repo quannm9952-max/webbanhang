@@ -25,7 +25,7 @@ $orderStats = array_reduce($orders, function ($carry, $o) {
     return $carry;
 }, []);
 
-$page_title = 'Tài khoản — TechShop';
+$page_title = 'Tài khoản — SobaMobile';
 require __DIR__ . '/includes/header.php';
 ?>
 <main class="container py-4">
@@ -51,8 +51,11 @@ require __DIR__ . '/includes/header.php';
         <div class="col-lg-4">
             <div class="profile-card mb-4">
                 <div class="profile-card-header">
-                    <div class="profile-avatar">
-                        <?= strtoupper(mb_substr($u['ho_ten'] ?? 'U', 0, 1, 'UTF-8')) ?>
+                     <div class="profile-avatar border overflow-hidden rounded-circle d-flex align-items-center justify-content-center" style="width: 70px; height: 70px;">
+                        <img src="<?= asset_url('assets/images/avatar.png') ?>" 
+                            alt="Avatar" 
+                            class="w-100 h-100" 
+                            style="object-fit: cover;">
                     </div>
                     <div class="fw-800 fs-5"><?= h($u['ho_ten']) ?></div>
                     <div class="opacity-75" style="font-size:13px"><?= h($u['email']) ?></div>

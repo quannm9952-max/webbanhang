@@ -324,10 +324,10 @@ CREATE TABLE `don_hang` (
 --
 
 INSERT INTO `don_hang` (`id_don_hang`, `id_nguoi_dung`, `id_phuong_thuc`, `tong_tien`, `ten_nguoi_nhan`, `so_dien_thoai_nhan`, `dia_chi_giao_hang`, `ghi_chu`, `trang_thai_don_hang`, `ngay_dat`) VALUES
-(1, 1, 1, 4550000.00, 'Admin TechShop', '0900000001', '5', NULL, 'da_giao', '2026-05-01 10:04:36'),
+(1, 1, 1, 4550000.00, 'Admin SobaMobile', '0900000001', '5', NULL, 'da_giao', '2026-05-01 10:04:36'),
 (2, 2, 1, 8290000.00, 'Nguyễn Văn A', '0900000002', '45', NULL, 'da_huy', '2026-05-01 10:16:23'),
 (3, 2, 1, 8290000.00, 'Nguyễn Văn A', '0900000002', 'Quận 1, TP.HCM', NULL, 'da_huy', '2026-05-01 11:18:22'),
-(4, 1, 1, 8290000.00, 'Admin TechShop', '0900000001', 'TP.HCM', NULL, 'da_huy', '2026-05-01 14:19:25');
+(4, 1, 1, 8290000.00, 'Admin SobaMobile', '0900000001', 'TP.HCM', NULL, 'da_huy', '2026-05-01 14:19:25');
 
 -- --------------------------------------------------------
 
@@ -359,7 +359,12 @@ INSERT INTO `gio_hang` (`id_gio_hang`, `id_nguoi_dung`, `ngay_tao`) VALUES
 CREATE TABLE `khuyen_mai` (
   `id_khuyen_mai` int(11) NOT NULL,
   `ten_khuyen_mai` varchar(150) NOT NULL,
+  `ma_code` varchar(50) DEFAULT NULL,
+  `hien_thi_checkout` tinyint(1) NOT NULL DEFAULT 1,
+  `kieu_giam` enum('phan_tram','tien_mat') NOT NULL DEFAULT 'phan_tram',
   `phan_tram_giam` decimal(5,2) NOT NULL,
+  `so_tien_giam` decimal(12,2) NOT NULL DEFAULT 0.00,
+  `don_toi_thieu` decimal(12,2) NOT NULL DEFAULT 0.00,
   `ngay_bat_dau` datetime NOT NULL,
   `ngay_ket_thuc` datetime NOT NULL,
   `trang_thai` enum('dang_dien_ra','ket_thuc','an') DEFAULT 'dang_dien_ra'
@@ -369,8 +374,8 @@ CREATE TABLE `khuyen_mai` (
 -- Đang đổ dữ liệu cho bảng `khuyen_mai`
 --
 
-INSERT INTO `khuyen_mai` (`id_khuyen_mai`, `ten_khuyen_mai`, `phan_tram_giam`, `ngay_bat_dau`, `ngay_ket_thuc`, `trang_thai`) VALUES
-(1, 'Mega Sale', 10.00, '2026-04-30 13:10:58', '2026-05-31 13:10:58', 'dang_dien_ra');
+INSERT INTO `khuyen_mai` (`id_khuyen_mai`, `ten_khuyen_mai`, `ma_code`, `hien_thi_checkout`, `kieu_giam`, `phan_tram_giam`, `so_tien_giam`, `don_toi_thieu`, `ngay_bat_dau`, `ngay_ket_thuc`, `trang_thai`) VALUES
+(1, 'Mega Sale', 'MEGA10', 1, 'phan_tram', 10.00, 0.00, 0.00, '2026-04-30 13:10:58', '2026-05-31 13:10:58', 'dang_dien_ra');
 
 -- --------------------------------------------------------
 
@@ -398,8 +403,8 @@ CREATE TABLE `nguoi_dung` (
 --
 
 INSERT INTO `nguoi_dung` (`id_nguoi_dung`, `id_vai_tro`, `ho_ten`, `email`, `so_dien_thoai`, `mat_khau`, `dia_chi`, `trang_thai`, `provider`, `google_id`, `avatar_url`, `ngay_tao`) VALUES
-(1, 1, 'Admin TechShop', 'admin@techshop.vn', '0900000001', '$2y$12$VblHMYXv9R1rYk241GgBieLc3pgY4WyYYcSiUp7UHWe3Pjr4y.zha', 'TP.HCM', 'hoat_dong', 'local', NULL, NULL, '2026-05-01 06:10:58'),
-(2, 2, 'Nguyễn Văn A', 'customer@techshop.vn', '0900000002', '$2y$12$VblHMYXv9R1rYk241GgBieLc3pgY4WyYYcSiUp7UHWe3Pjr4y.zha', 'Quận 1, TP.HCM', 'hoat_dong', 'local', NULL, NULL, '2026-05-01 06:10:58'),
+(1, 1, 'Admin SobaMobile', 'admin@SobaMobile.vn', '0900000001', '$2y$12$VblHMYXv9R1rYk241GgBieLc3pgY4WyYYcSiUp7UHWe3Pjr4y.zha', 'TP.HCM', 'hoat_dong', 'local', NULL, NULL, '2026-05-01 06:10:58'),
+(2, 2, 'Nguyễn Văn A', 'customer@SobaMobile.vn', '0900000002', '$2y$12$VblHMYXv9R1rYk241GgBieLc3pgY4WyYYcSiUp7UHWe3Pjr4y.zha', 'Quận 1, TP.HCM', 'hoat_dong', 'local', NULL, NULL, '2026-05-01 06:10:58'),
 (3, 2, 'đoàn thị kim phượng', 'doanp7293@gmail.com', '0383825425', '$2y$10$.TZsQKE/Nup4Q75THC8Fyu6yKzt5UygAMD/ycd05LTzSl4mwV.9WG', '35', 'hoat_dong', 'local', NULL, NULL, '2026-05-01 06:19:46');
 
 -- --------------------------------------------------------
@@ -452,8 +457,8 @@ INSERT INTO `san_pham` (`id_san_pham`, `id_danh_muc`, `id_thuong_hieu`, `ten_san
 (1, 1, 1, 'Dell Inspiron 15', 'LAP-DELL-001', 15990000.00, 'https://res.cloudinary.com/daro9erbh/image/upload/c_pad,w_400,h_400,b_white/v1776581907/dell-inspiron-15-3530-i7-n5i7301w1-thumb-638754980409982405-600x600_oebsy3.jpg', 'Laptop văn phòng ổn định', 'Phù hợp học tập, văn phòng', 20, 'dang_ban', '2026-05-01 06:10:58'),
 (2, 1, 2, 'Asus Vivobook 14', 'LAP-ASUS-001', 13990000.00, 'https://res.cloudinary.com/daro9erbh/image/upload/c_pad,w_400,h_400,b_white/v1776581997/maxresdefault_czcab1.jpg', 'Laptop mỏng nhẹ', 'Phù hợp sinh viên', 18, 'dang_ban', '2026-05-01 06:10:58'),
 (3, 2, 4, 'Samsung Monitor 24 inch', 'MON-SAM-001', 3290000.00, 'https://res.cloudinary.com/daro9erbh/image/upload/c_pad,w_400,h_400,b_white/v1776582168/samsung-s3-s31c-ls27c310eaexxv-27-inch-fhd-thumb-1-600x600_xavytv.jpg', 'Màn hình Full HD', 'Làm việc và giải trí', 30, 'dang_ban', '2026-05-01 06:10:58'),
-(4, 3, 3, 'Logitech K380', 'KEY-LOG-001', 790000.00, 'https://res.cloudinary.com/daro9erbh/image/upload/c_pad,w_400,h_400,b_white/v1776582187/logitech-g-pro-x-mechanical-gaming-keyboard_2-600x400_0472fe2fcf3640dd8836c1fed7377043_m5i5fq.jpg', 'Bàn phím bluetooth', 'Gọn nhẹ', 38, 'dang_ban', '2026-05-01 06:10:58'),
-(5, 4, 3, 'Logitech G102', 'MOU-LOG-001', 390000.00, 'https://res.cloudinary.com/daro9erbh/image/upload/c_pad,w_400,h_400,b_white/v1776582301/chuot-gaming-logitech-g102-gen2-lightsync-den-1-750x500_dtp0kf.jpg', 'Chuột gaming', 'Phổ thông', 55, 'dang_ban', '2026-05-01 06:10:58'),
+(4, 3, 3, 'LogiTech K380', 'KEY-LOG-001', 790000.00, 'https://res.cloudinary.com/daro9erbh/image/upload/c_pad,w_400,h_400,b_white/v1776582187/logiTech-g-pro-x-mechanical-gaming-keyboard_2-600x400_0472fe2fcf3640dd8836c1fed7377043_m5i5fq.jpg', 'Bàn phím bluetooth', 'Gọn nhẹ', 38, 'dang_ban', '2026-05-01 06:10:58'),
+(5, 4, 3, 'LogiTech G102', 'MOU-LOG-001', 390000.00, 'https://res.cloudinary.com/daro9erbh/image/upload/c_pad,w_400,h_400,b_white/v1776582301/chuot-gaming-logiTech-g102-gen2-lightsync-den-1-750x500_dtp0kf.jpg', 'Chuột gaming', 'Phổ thông', 55, 'dang_ban', '2026-05-01 06:10:58'),
 (6, 5, 6, 'Kingston NV2 500GB', 'SSD-KIN-001', 990000.00, 'https://res.cloudinary.com/daro9erbh/image/upload/c_pad,w_400,h_400,b_white/v1776582684/ktc-product-ssd-snv2s-250g-3-lg_134f63eaef554cb0984a5d322dc25cb5_8ef94ccd223940788600ff0acd438e2b_gu0fhk.png', 'SSD NVMe', 'Tốc độ cao', 25, 'dang_ban', '2026-05-01 06:10:58'),
 (7, 6, 5, 'MSI RTX 4060 Ventus', 'GPU-MSI-001', 8290000.00, 'https://res.cloudinary.com/daro9erbh/image/upload/c_pad,w_400,h_400,b_white/v1776582501/vga-asus-dual-geforce-rtx-4060-oc-edition-8gb-gddr6-dual-rtx4060-o8g_cmhlft.jpg', 'Card đồ họa RTX', 'Gaming 1080p', 10, 'dang_ban', '2026-05-01 06:10:58');
 
@@ -533,7 +538,7 @@ CREATE TABLE `thuong_hieu` (
 INSERT INTO `thuong_hieu` (`id_thuong_hieu`, `ten_thuong_hieu`, `trang_thai`) VALUES
 (1, 'Dell', 'hien'),
 (2, 'Asus', 'hien'),
-(3, 'Logitech', 'hien'),
+(3, 'LogiTech', 'hien'),
 (4, 'Samsung', 'hien'),
 (5, 'MSI', 'hien'),
 (6, 'Kingston', 'hien');

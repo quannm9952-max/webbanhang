@@ -17,7 +17,7 @@ if (is_post() && isset($_POST['cancel_order_id'])) {
 }
 
 $orders = $orderModel->getOrdersByUser((int)$_SESSION['id_nguoi_dung']);
-$page_title = 'Đơn hàng của tôi — TechShop';
+$page_title = 'Đơn hàng của tôi — SobaMobile';
 $success = flash('success');
 $error = flash('error');
 require __DIR__ . '/includes/header.php';

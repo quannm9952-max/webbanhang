@@ -13,12 +13,42 @@ $q = $data['q'];
 $sort = $data['sort'];
 $heading = $data['heading'];
 
-$page_title = 'Cửa hàng — TechShop';
+$page_title = 'Cửa hàng — SobaMobile';
 require_once __DIR__ . '/includes/header.php';
 ?>
 <main class="container py-2">
     <?php require __DIR__ . '/includes/hero.php'; ?>
-
+     <div id="posterCarousel" class="carousel slide mb-4 shadow-sm rounded-4 overflow-hidden border mx-auto" data-bs-ride="carousel" style="max-width: 1100px;">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#posterCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#posterCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        </div>
+        
+        <div class="carousel-inner" style="border-radius: 1rem; aspect-ratio: 3 / 1; background-color: #000000;">
+            <div class="carousel-item active" data-bs-interval="4000" style="height: 100%; background-color: #000000;">
+                <img src="<?= asset_url('assets/images/poster1.jpg') ?>" 
+                     class="d-block h-100 mx-auto" 
+                     alt="Poster 1" 
+                     style="object-fit: contain; width: auto;">
+            </div>
+            
+            <div class="carousel-item" data-bs-interval="4000" style="height: 100%; background-color: #080704;">
+                <img src="<?= asset_url('assets/images/poster2.png') ?>" 
+                     class="d-block h-100 mx-auto" 
+                     alt="Poster 2" 
+                     style="object-fit: contain; width: auto;">
+            </div>
+        </div>
+        
+        <button class="carousel-control-prev" type="button" data-bs-target="#posterCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#posterCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
     <div class="row g-4 mt-2" id="shop-content">
 
         <!-- Promotional Banner Top -->

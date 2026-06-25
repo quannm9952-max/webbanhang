@@ -2,7 +2,7 @@
     <div class="container">
         <div class="footer-cta">
             <div>
-                <h4>TechShop đồng hành cùng bạn</h4>
+                <h4>SobaMobile đồng hành cùng bạn</h4>
                 <p>Nhận tư vấn thiết bị công nghệ phù hợp học tập, làm việc và gaming.</p>
             </div>
             <a href="<?= BASE_URL ?>/shop.php" class="btn btn-light rounded-pill px-4 fw-700">
@@ -14,7 +14,7 @@
             <div class="col-lg-4">
                 <a href="<?= BASE_URL ?>/shop.php" class="brand-logo">
                     <span class="brand-icon">T</span>
-                    <span>Tech<span>Shop</span></span>
+                    <span>Soba<span>Mobile</span></span>
                 </a>
                 <p class="text-muted mt-3" style="font-size:14px;line-height:1.7">
                     Thiết bị điện tử chính hãng, bảo hành rõ ràng, giao hàng nhanh toàn quốc.
@@ -44,13 +44,13 @@
                 <h6>Liên hệ</h6>
                 <p><i class="bi bi-geo-alt-fill text-primary me-2"></i>123 Nguyễn Văn Linh, Q.7, TP.HCM</p>
                 <p><i class="bi bi-telephone-fill text-primary me-2"></i>1900 1234 (8:00–22:00)</p>
-                <p><i class="bi bi-envelope-fill text-primary me-2"></i>cskh@techshop.vn</p>
+                <p><i class="bi bi-envelope-fill text-primary me-2"></i>cskh@SobaMobile.vn</p>
                 <p><i class="bi bi-shield-check-fill text-success me-2"></i>Bảo hành 12–24 tháng chính hãng</p>
             </div>
         </div>
 
         <div class="footer-bottom">
-            <span>&copy; <?= date('Y') ?> TechShop. All rights reserved.</span>
+            <span>&copy; <?= date('Y') ?> SobaMobile. All rights reserved.</span>
             <span>
                <a href="<?= BASE_URL ?>/privacy.php" class="text-muted text-decoration-none me-3">Chính sách bảo mật</a>
                 <a href="<?= BASE_URL ?>/terms.php" class="text-muted text-decoration-none">Điều khoản sử dụng</a>

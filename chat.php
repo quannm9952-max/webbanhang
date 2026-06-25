@@ -9,7 +9,7 @@ $chat = new Chat(db_connect());
 if (is_post()) {
     $msg = (string)($_POST['noi_dung'] ?? '');
     if ($chat->send($uid, 'khach', $msg)) {
-        $_SESSION['success'] = 'Đã gửi tin nhắn cho TechShop.';
+        $_SESSION['success'] = 'Đã gửi tin nhắn cho SobaMobile.';
     } else {
         $_SESSION['error'] = 'Vui lòng nhập nội dung tin nhắn.';
     }
@@ -17,7 +17,7 @@ if (is_post()) {
 }
 
 $messages = $chat->messages($uid);
-$page_title = 'Chat hỗ trợ — TechShop';
+$page_title = 'Chat hỗ trợ — SobaMobile';
 $success = flash('success');
 $error = flash('error');
 require __DIR__ . '/includes/header.php';
@@ -30,12 +30,12 @@ require __DIR__ . '/includes/header.php';
         </ol>
     </nav>
 
-    <div class="section-heading mb-4"><i class="bi bi-chat-dots me-2"></i>Chat với TechShop</div>
+    <div class="section-heading mb-4"><i class="bi bi-chat-dots me-2"></i>Chat với SobaMobile</div>
 
     <div class="bg-white rounded-4 shadow-sm p-4">
         <div class="chat-box mb-3" style="height:420px;overflow:auto;background:#f8fafc;border-radius:18px;padding:18px">
             <?php if (!$messages): ?>
-                <div class="text-center text-muted py-5">Bạn cần hỗ trợ về đơn hàng hoặc sản phẩm? Nhắn cho TechShop tại đây.</div>
+                <div class="text-center text-muted py-5">Bạn cần hỗ trợ về đơn hàng hoặc sản phẩm? Nhắn cho SobaMobile tại đây.</div>
             <?php endif; ?>
             <?php foreach ($messages as $m): $mine = $m['nguoi_gui'] === 'khach'; ?>
                 <div class="d-flex mb-3 <?= $mine ? 'justify-content-end' : 'justify-content-start' ?>">

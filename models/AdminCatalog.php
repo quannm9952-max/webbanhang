@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 class AdminCatalog
 {
+    private bool $promotionSchemaReady = false;
+
     public function __construct(private PDO $pdo) {}
 
     // ===== DANH MỤC =====
@@ -181,6 +183,8 @@ class AdminCatalog
     // ===== KHUYẾN MÃI =====
     public function promotions(): array
     {
+        $this->ensurePromotionSchema();
+
         return $this->pdo->query("
             SELECT *
             FROM khuyen_mai
@@ -191,6 +195,8 @@ class AdminCatalog
 
     public function findPromotion(int $id): ?array
     {
+        $this->ensurePromotionSchema();
+
         $s = $this->pdo->prepare("SELECT * FROM khuyen_mai WHERE id_khuyen_mai = :id");
         $s->execute([':id' => $id]);
         $km = $s->fetch();
@@ -199,39 +205,53 @@ class AdminCatalog
 
     public function savePromotion(array $d, int $id = 0): bool
     {
+        $this->ensurePromotionSchema();
+
+        $type = in_array(($d['kieu_giam'] ?? 'phan_tram'), ['phan_tram', 'tien_mat'], true)
+            ? (string)$d['kieu_giam']
+            : 'phan_tram';
+        $percent = max(0, min(100, (float)str_replace(',', '.', (string)($d['phan_tram_giam'] ?? 0))));
+        $code = trim((string)($d['ma_code'] ?? ''));
+        $params = [
+            ':ten'  => $d['ten_khuyen_mai'],
+            ':ma'   => $code !== '' ? $code : null,
+            ':show' => isset($d['hien_thi_checkout']) ? 1 : 0,
+            ':type' => $type,
+            ':giam' => $percent,
+            ':cash' => $this->moneyValue($d['so_tien_giam'] ?? 0),
+            ':min'  => $this->moneyValue($d['don_toi_thieu'] ?? 0),
+            ':bd'   => $d['ngay_bat_dau'],
+            ':kt'   => $d['ngay_ket_thuc'],
+            ':tt'   => $d['trang_thai'] ?? 'dang_dien_ra',
+        ];
+
         if ($id) {
             $s = $this->pdo->prepare("
                 UPDATE khuyen_mai
                 SET ten_khuyen_mai = :ten,
+                    ma_code = :ma,
+                    hien_thi_checkout = :show,
+                    kieu_giam = :type,
                     phan_tram_giam = :giam,
+                    so_tien_giam = :cash,
+                    don_toi_thieu = :min,
                     ngay_bat_dau = :bd,
                     ngay_ket_thuc = :kt,
                     trang_thai = :tt
                 WHERE id_khuyen_mai = :id
             ");
-            return $s->execute([
-                ':ten'  => $d['ten_khuyen_mai'],
-                ':giam' => $d['phan_tram_giam'],
-                ':bd'   => $d['ngay_bat_dau'],
-                ':kt'   => $d['ngay_ket_thuc'],
-                ':tt'   => $d['trang_thai'] ?? 'dang_dien_ra',
-                ':id'   => $id,
-            ]);
+            $params[':id'] = $id;
+            return $s->execute($params);
         }
 
         $s = $this->pdo->prepare("
             INSERT INTO khuyen_mai
-                (ten_khuyen_mai, phan_tram_giam, ngay_bat_dau, ngay_ket_thuc, trang_thai)
+                (ten_khuyen_mai, ma_code, hien_thi_checkout, kieu_giam, phan_tram_giam,
+                 so_tien_giam, don_toi_thieu, ngay_bat_dau, ngay_ket_thuc, trang_thai)
             VALUES
-                (:ten, :giam, :bd, :kt, :tt)
+                (:ten, :ma, :show, :type, :giam, :cash, :min, :bd, :kt, :tt)
         ");
-        return $s->execute([
-            ':ten'  => $d['ten_khuyen_mai'],
-            ':giam' => $d['phan_tram_giam'],
-            ':bd'   => $d['ngay_bat_dau'],
-            ':kt'   => $d['ngay_ket_thuc'],
-            ':tt'   => $d['trang_thai'] ?? 'dang_dien_ra',
-        ]);
+        return $s->execute($params);
     }
 
     public function deletePromotion(int $id): bool
@@ -251,6 +271,8 @@ class AdminCatalog
 
     public function getPromotionProductIds(int $promotionId): array
     {
+        $this->ensurePromotionSchema();
+
         $s = $this->pdo->prepare("
             SELECT id_san_pham
             FROM san_pham_khuyen_mai
@@ -262,6 +284,8 @@ class AdminCatalog
 
     public function syncPromotionProducts(int $promotionId, array $productIds): void
     {
+        $this->ensurePromotionSchema();
+
         $this->pdo->prepare("
             DELETE FROM san_pham_khuyen_mai
             WHERE id_khuyen_mai = ?
@@ -292,5 +316,36 @@ class AdminCatalog
             WHERE trang_thai != 'an'
             ORDER BY id_san_pham DESC
         ")->fetchAll();
+    }
+
+    private function moneyValue(mixed $value): float
+    {
+        $digits = preg_replace('/[^\d]/', '', (string)$value);
+        return $digits === '' ? 0.0 : (float)$digits;
+    }
+
+    private function ensurePromotionSchema(): void
+    {
+        if ($this->promotionSchemaReady) {
+            return;
+        }
+
+        $columns = $this->pdo->query('SHOW COLUMNS FROM khuyen_mai')->fetchAll(PDO::FETCH_COLUMN);
+        $missing = [
+            'ma_code' => 'ALTER TABLE khuyen_mai ADD COLUMN ma_code VARCHAR(50) DEFAULT NULL AFTER ten_khuyen_mai',
+            'hien_thi_checkout' => 'ALTER TABLE khuyen_mai ADD COLUMN hien_thi_checkout TINYINT(1) NOT NULL DEFAULT 1 AFTER ma_code',
+            'kieu_giam' => "ALTER TABLE khuyen_mai ADD COLUMN kieu_giam ENUM('phan_tram','tien_mat') NOT NULL DEFAULT 'phan_tram' AFTER hien_thi_checkout",
+            'so_tien_giam' => 'ALTER TABLE khuyen_mai ADD COLUMN so_tien_giam DECIMAL(12,2) NOT NULL DEFAULT 0.00 AFTER phan_tram_giam',
+            'don_toi_thieu' => 'ALTER TABLE khuyen_mai ADD COLUMN don_toi_thieu DECIMAL(12,2) NOT NULL DEFAULT 0.00 AFTER so_tien_giam',
+        ];
+
+        foreach ($missing as $column => $sql) {
+            if (!in_array($column, $columns, true)) {
+                $this->pdo->exec($sql);
+                $columns[] = $column;
+            }
+        }
+
+        $this->promotionSchemaReady = true;
     }
 }

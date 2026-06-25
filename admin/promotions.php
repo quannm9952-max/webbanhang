@@ -35,7 +35,13 @@ $promotions = $m->promotions();
             <?php foreach ($promotions as $km): ?>
             <tr>
                 <td class="fw-600"><?= h($km['ten_khuyen_mai']) ?></td>
-                <td class="text-danger fw-bold">-<?= h($km['phan_tram_giam']) ?>%</td>
+                <td class="text-danger fw-bold">
+                    <?php if (($km['kieu_giam'] ?? 'phan_tram') === 'tien_mat'): ?>
+                        -<?= number_format((float)($km['so_tien_giam'] ?? 0), 0, ',', '.') ?> đ
+                    <?php else: ?>
+                        -<?= h($km['phan_tram_giam']) ?>%
+                    <?php endif; ?>
+                </td>
                 <td><?= h($km['ngay_bat_dau']) ?></td>
                 <td><?= h($km['ngay_ket_thuc']) ?></td>
                 <td>

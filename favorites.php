@@ -4,7 +4,7 @@ require_once __DIR__ . '/models/Favorite.php';
 require_login();
 
 $products   = (new Favorite(db_connect()))->getProductsByUser((int)$_SESSION['id_nguoi_dung']);
-$page_title = 'Sản phẩm yêu thích — TechShop';
+$page_title = 'Sản phẩm yêu thích — SobaMobile';
 require __DIR__ . '/includes/header.php';
 ?>
 <main class="container py-4">

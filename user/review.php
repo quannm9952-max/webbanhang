@@ -26,7 +26,7 @@ if (!$items) {
 
 $success = flash('success');
 $error = flash('error');
-$page_title = 'Đánh giá đơn hàng — TechShop';
+$page_title = 'Đánh giá đơn hàng — SobaMobile';
 require __DIR__ . '/includes/header.php';
 ?>
 <main class="container py-4">
