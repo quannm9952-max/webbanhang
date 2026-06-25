@@ -13,7 +13,7 @@ $q = $data['q'];
 $sort = $data['sort'];
 $heading = $data['heading'];
 
-$page_title = 'Khuyến mãi — TechShop';
+$page_title = 'Khuyến mãi — SobaMobile';
 require_once __DIR__ . '/includes/header.php';
 ?>
 <main class="container py-2">

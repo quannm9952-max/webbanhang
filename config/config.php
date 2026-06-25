@@ -11,7 +11,7 @@ if (class_exists('Dotenv\Dotenv')) {
 }
 
 // 3. Application Configurations (Preserved from your original settings)
-define('APP_NAME', 'TechShop');
+define('APP_NAME', 'SobaMobile');
 define('APP_ENV', 'development');
 
 // 4. Dynamic URL Detection (Works for teammates locally on Apache and for you on port 8000)

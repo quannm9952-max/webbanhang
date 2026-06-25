@@ -1,5 +1,5 @@
 <?php
-$page_title = 'Chính sách bảo mật — TechShop';
+$page_title = 'Chính sách bảo mật — SobaMobile';
 require __DIR__ . '/includes/header.php';
 ?>
 
@@ -12,7 +12,7 @@ require __DIR__ . '/includes/header.php';
 
                 <div class="content-section" style="line-height: 1.8; color: #334155;">
                     <h4 class="fw-bold text-dark mt-4 mb-3">1. Mục đích thu thập thông tin cá nhân</h4>
-                    <p>TechShop cam kết bảo vệ sự riêng tư của khách hàng. Chúng tôi chỉ thu thập các thông tin cần thiết nhằm:</p>
+                    <p>SobaMobile cam kết bảo vệ sự riêng tư của khách hàng. Chúng tôi chỉ thu thập các thông tin cần thiết nhằm:</p>
                     <ul>
                         <li>Xử lý đơn đặt hàng, giao hàng và thanh toán.</li>
                         <li>Cung cấp hỗ trợ khách hàng và giải quyết khiếu nại.</li>
@@ -28,7 +28,7 @@ require __DIR__ . '/includes/header.php';
                     </ul>
 
                     <h4 class="fw-bold text-dark mt-4 mb-3">3. Thời gian lưu trữ thông tin</h4>
-                    <p>Thông tin cá nhân của người dùng được lưu trữ an toàn trên hệ thống máy chủ của TechShop trong suốt thời gian hoạt động của tài khoản hoặc cho đến khi có yêu cầu hủy bỏ từ phía người dùng.</p>
+                    <p>Thông tin cá nhân của người dùng được lưu trữ an toàn trên hệ thống máy chủ của SobaMobile trong suốt thời gian hoạt động của tài khoản hoặc cho đến khi có yêu cầu hủy bỏ từ phía người dùng.</p>
 
                     <h4 class="fw-bold text-dark mt-4 mb-3">4. Chia sẻ thông tin</h4>
                     <p>Chúng tôi tuyệt đối không mua bán hay chia sẻ thông tin cá nhân của bạn cho bên thứ ba, ngoại trừ các đối tác vận chuyển và đối tác thanh toán để hoàn tất đơn hàng.</p>

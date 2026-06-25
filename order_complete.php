@@ -8,7 +8,7 @@ $o  = $om->getByIdForUser((int)($_GET['id'] ?? 0), (int)$_SESSION['id_nguoi_dung
 if (!$o) redirect('my_orders.php');
 
 $items      = $om->getItems((int)$o['id_don_hang']);
-$page_title = 'Đặt hàng thành công — TechShop';
+$page_title = 'Đặt hàng thành công — SobaMobile';
 require __DIR__ . '/includes/header.php';
 ?>
 <main class="container py-5">
@@ -20,7 +20,7 @@ require __DIR__ . '/includes/header.php';
                 </div>
                 <h2 class="fw-900 text-dark mb-2">Đặt hàng thành công!</h2>
                 <p class="text-muted mb-4">
-                    Cảm ơn bạn đã tin tưởng TechShop. Đơn hàng <strong>#<?= (int)$o['id_don_hang'] ?></strong> của bạn đã được ghi nhận.
+                    Cảm ơn bạn đã tin tưởng SobaMobile. Đơn hàng <strong>#<?= (int)$o['id_don_hang'] ?></strong> của bạn đã được ghi nhận.
                 </p>
 
                 <div class="bg-light rounded-3 p-3 mb-4 text-start">

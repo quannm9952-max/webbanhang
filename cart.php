@@ -9,7 +9,7 @@ $data = $controller->pageData();
 $items = $data['items'];
 $total = $data['total'];
 
-$page_title = 'Giỏ hàng — TechShop';
+$page_title = 'Giỏ hàng — SobaMobile';
 require __DIR__ . '/includes/header.php';
 ?>
 <main class="container py-4">

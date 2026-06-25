@@ -27,7 +27,7 @@ $productReviews    = $reviewModel->getPublicByProduct((int)$p['id_san_pham']);
 $reviewStats       = $reviewModel->getStatsByProduct((int)$p['id_san_pham']);
 
 
-$page_title = h($p['ten_san_pham']) . ' — TechShop';
+$page_title = h($p['ten_san_pham']) . ' — SobaMobile';
 require __DIR__ . '/includes/header.php';
 ?>
 <main class="container py-4">
@@ -195,7 +195,7 @@ require __DIR__ . '/includes/header.php';
                         <?php else: ?>
                             <div style="font-size:15px;line-height:1.9;color:#334155">
                                 <p><strong><?= h($p['ten_san_pham']) ?></strong> là sản phẩm phù hợp cho người dùng đang tìm kiếm một thiết bị công nghệ ổn định, tiện lợi và có tính ứng dụng cao. Sản phẩm hỗ trợ tốt các nhu cầu phổ biến như học tập, làm việc, giải trí, lưu trữ dữ liệu và sử dụng hằng ngày.</p>
-                                <p>Với thiết kế hiện đại, dễ sử dụng và mức giá hợp lý, sản phẩm giúp người dùng có trải nghiệm mua sắm hiệu quả hơn. Đây là lựa chọn đáng cân nhắc trong phân khúc <?= $categoryName !== '' ? h($categoryName) : 'sản phẩm điện tử' ?> tại TechShop.</p>
+                                <p>Với thiết kế hiện đại, dễ sử dụng và mức giá hợp lý, sản phẩm giúp người dùng có trải nghiệm mua sắm hiệu quả hơn. Đây là lựa chọn đáng cân nhắc trong phân khúc <?= $categoryName !== '' ? h($categoryName) : 'sản phẩm điện tử' ?> tại SobaMobile.</p>
                             </div>
                         <?php endif; ?>
 
@@ -226,7 +226,7 @@ require __DIR__ . '/includes/header.php';
                                 </tbody>
                             </table>
                         </div>
-                        <div class="alert alert-primary mt-3 mb-0" style="font-size:14px"><i class="bi bi-info-circle me-1"></i>Liên hệ TechShop để được tư vấn cấu hình, chính sách bảo hành và ưu đãi mới nhất.</div>
+                        <div class="alert alert-primary mt-3 mb-0" style="font-size:14px"><i class="bi bi-info-circle me-1"></i>Liên hệ SobaMobile để được tư vấn cấu hình, chính sách bảo hành và ưu đãi mới nhất.</div>
                     </div>
                 </div>
             </div>
@@ -262,7 +262,7 @@ require __DIR__ . '/includes/header.php';
                                 <div style="white-space:pre-wrap"><?= h($rv['noi_dung'] ?? '') ?></div>
                                 <?php if (!empty($rv['phan_hoi_admin'])): ?>
                                     <div class="alert alert-primary py-2 mt-3 mb-0" style="font-size:14px">
-                                        <strong>TechShop phản hồi:</strong> <?= h($rv['phan_hoi_admin']) ?>
+                                        <strong>SobaMobile phản hồi:</strong> <?= h($rv['phan_hoi_admin']) ?>
                                     </div>
                                 <?php endif; ?>
                             </div>

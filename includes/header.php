@@ -30,7 +30,7 @@ if (is_logged_in()) {
     <div class="container d-flex justify-content-between flex-wrap gap-2">
         <span>
             <a href="<?= $base ?>/promotions.php" class="text-white text-decoration-none d-inline-flex align-items-center gap-1" style="transition: opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
-                <i class="bi bi-lightning-charge-fill text-warning"></i> TechShop Flash Sale — Giảm đến 40% - Xem ngay!
+                <i class="bi bi-lightning-charge-fill text-warning"></i> SobaMobile Flash Sale — Giảm đến 40% - Xem ngay!
             </a>
         </span>
         <span><i class="bi bi-telephone-fill me-1"></i>1900 1234 &nbsp;|&nbsp; <i class="bi bi-clock me-1"></i>8:00–22:00</span>
@@ -42,7 +42,7 @@ if (is_logged_in()) {
 
         <a href="<?= $base ?>/shop.php" class="brand-logo">
             <span class="brand-icon">T</span>
-            <span>Tech<span>Shop</span></span>
+            <span>Soba<span>Mobile</span></span>
         </a>
 
         <form action="<?= $base ?>/shop.php" method="GET" class="search-box d-none d-md-flex">

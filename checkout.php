@@ -12,7 +12,7 @@ $methods = $data['methods'];
 $error = $data['error'];
 $user_info = $data['user'];
 
-$page_title = 'Thanh toán — TechShop';
+$page_title = 'Thanh toán — SobaMobile';
 require __DIR__ . '/includes/header.php';
 ?>
 <main class="container py-4">
