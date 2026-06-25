@@ -11,57 +11,53 @@ $products = (int)$pdo->query("SELECT COUNT(*) FROM san_pham")->fetchColumn();
 $users    = (int)$pdo->query("SELECT COUNT(*) FROM nguoi_dung")->fetchColumn();
 ?>
 
-<h1 class="mb-4">Tổng Quan Hệ Thống</h1>
+<h1 class="mb-4">Dashboard</h1>
 
 <!-- Stat Cards -->
 <div class="row g-4 mb-5">
     <div class="col-md-3 col-6">
-        <div class="admin-stat-card">
-            <div class="admin-icon-box admin-icon-blue">
-                <i class="bi bi-box-seam-fill"></i>
+        <div class="bg-white p-4 rounded-4 shadow-sm text-center">
+            <div class="mb-2" style="font-size:32px;color:#0ea5e9">
+                <i class="bi bi-box-seam"></i>
             </div>
-            <p class="text-muted mb-1">Tổng đơn hàng</p>
-            <h3><?= $s['totalOrders'] ?></h3>
+            <p class="text-muted mb-1" style="font-size:13px">Tổng đơn hàng</p>
+            <h3 class="fw-800 mb-0"><?= $s['totalOrders'] ?></h3>
         </div>
     </div>
-
     <div class="col-md-3 col-6">
-        <div class="admin-stat-card">
-            <div class="admin-icon-box admin-icon-green">
+        <div class="bg-white p-4 rounded-4 shadow-sm text-center">
+            <div class="mb-2" style="font-size:32px;color:#22c55e">
                 <i class="bi bi-cash-coin"></i>
             </div>
-            <p class="text-muted mb-1">Doanh thu (Đã giao)</p>
-            <h3><?= format_price($s['revenue']) ?></h3>
+            <p class="text-muted mb-1" style="font-size:13px">Doanh thu (Đã giao)</p>
+            <h3 class="fw-800 mb-0" style="font-size:20px"><?= format_price($s['revenue']) ?></h3>
         </div>
     </div>
-
     <div class="col-md-3 col-6">
-        <div class="admin-stat-card">
-            <div class="admin-icon-box admin-icon-orange">
-                <i class="bi bi-clock-fill"></i>
+        <div class="bg-white p-4 rounded-4 shadow-sm text-center">
+            <div class="mb-2" style="font-size:32px;color:#f59e0b">
+                <i class="bi bi-clock-history"></i>
             </div>
-            <p class="text-muted mb-1">Chờ xác nhận</p>
-            <h3><?= $s['pending'] ?></h3>
+            <p class="text-muted mb-1" style="font-size:13px">Chờ xác nhận</p>
+            <h3 class="fw-800 mb-0"><?= $s['pending'] ?></h3>
         </div>
     </div>
-
     <div class="col-md-3 col-6">
-        <div class="admin-stat-card">
-            <div class="admin-icon-box admin-icon-purple">
-                <i class="bi bi-grid-fill"></i>
+        <div class="bg-white p-4 rounded-4 shadow-sm text-center">
+            <div class="mb-2" style="font-size:32px;color:#8b5cf6">
+                <i class="bi bi-grid"></i>
             </div>
-            <p class="text-muted mb-1">Sản phẩm</p>
-            <h3><?= $products ?></h3>
+            <p class="text-muted mb-1" style="font-size:13px">Sản phẩm</p>
+            <h3 class="fw-800 mb-0"><?= $products ?></h3>
         </div>
     </div>
-
     <div class="col-md-3 col-6">
-        <div class="admin-stat-card">
-            <div class="admin-icon-box admin-icon-pink">
-                <i class="bi bi-people-fill"></i>
+        <div class="bg-white p-4 rounded-4 shadow-sm text-center">
+            <div class="mb-2" style="font-size:32px;color:#ec4899">
+                <i class="bi bi-people"></i>
             </div>
-            <p class="text-muted mb-1">Người dùng</p>
-            <h3><?= $users ?></h3>
+            <p class="text-muted mb-1" style="font-size:13px">Người dùng</p>
+            <h3 class="fw-800 mb-0"><?= $users ?></h3>
         </div>
     </div>
 </div>

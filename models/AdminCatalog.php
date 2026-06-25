@@ -5,39 +5,6 @@ class AdminCatalog
 {
     public function __construct(private PDO $pdo) {}
 
-    private function parseNumber(mixed $value): float
-    {
-        if (is_int($value) || is_float($value)) {
-            return (float)$value;
-        }
-
-        $value = trim((string)$value);
-        if ($value === '') {
-            return 0.0;
-        }
-
-        $value = preg_replace('/[^\d,.\-]/', '', $value) ?? '';
-        $lastComma = strrpos($value, ',');
-        $lastDot = strrpos($value, '.');
-
-        if ($lastComma !== false && $lastDot !== false) {
-            if ($lastComma > $lastDot) {
-                $value = str_replace('.', '', $value);
-                $value = str_replace(',', '.', $value);
-            } else {
-                $value = str_replace(',', '', $value);
-            }
-        } elseif ($lastComma !== false) {
-            $value = str_replace(',', '.', $value);
-        } elseif (substr_count($value, '.') > 1) {
-            $value = str_replace('.', '', $value);
-        } elseif ($lastDot !== false && strlen($value) - $lastDot - 1 === 3) {
-            $value = str_replace('.', '', $value);
-        }
-
-        return (float)$value;
-    }
-
     // ===== DANH MỤC =====
     public function categories(): array
     {
@@ -231,96 +198,41 @@ class AdminCatalog
     }
 
     public function savePromotion(array $d, int $id = 0): bool
-{
-    $kieuGiam = $d['kieu_giam'] ?? 'phan_tram';
-
-    $maCode = trim($d['ma_code'] ?? '');
-    $ten = trim($d['ten_khuyen_mai'] ?? '');
-    $phanTramGiam = $this->parseNumber($d['phan_tram_giam'] ?? 0);
-    $soTienGiam = $this->parseNumber($d['so_tien_giam'] ?? 0);
-    $donToiThieu = $this->parseNumber($d['don_toi_thieu'] ?? 0);
-    $hienThiCheckout = !empty($d['hien_thi_checkout']) ? 1 : 0;
-
-    $maCode = $maCode !== '' ? strtoupper($maCode) : null;
-
-    if ($kieuGiam === 'tien_mat') {
-        $phanTramGiam = 0;
-        if ($maCode === null) {
-            throw new Exception('Vui lòng nhập mã giảm giá cho mã áp dụng khi thanh toán.');
+    {
+        if ($id) {
+            $s = $this->pdo->prepare("
+                UPDATE khuyen_mai
+                SET ten_khuyen_mai = :ten,
+                    phan_tram_giam = :giam,
+                    ngay_bat_dau = :bd,
+                    ngay_ket_thuc = :kt,
+                    trang_thai = :tt
+                WHERE id_khuyen_mai = :id
+            ");
+            return $s->execute([
+                ':ten'  => $d['ten_khuyen_mai'],
+                ':giam' => $d['phan_tram_giam'],
+                ':bd'   => $d['ngay_bat_dau'],
+                ':kt'   => $d['ngay_ket_thuc'],
+                ':tt'   => $d['trang_thai'] ?? 'dang_dien_ra',
+                ':id'   => $id,
+            ]);
         }
-    } else {
-        $soTienGiam = 0;
-    }
 
-    if ($maCode !== null) {
-        $check = $this->pdo->prepare("
-            SELECT COUNT(*)
-            FROM khuyen_mai
-            WHERE UPPER(ma_code) = :ma
-              AND id_khuyen_mai != :id
-        ");
-        $check->execute([
-            ':ma' => $maCode,
-            ':id' => $id,
-        ]);
-
-        if ((int)$check->fetchColumn() > 0) {
-            throw new Exception('Mã giảm giá đã tồn tại, vui lòng nhập mã khác.');
-        }
-    }
-
-    if ($id) {
         $s = $this->pdo->prepare("
-            UPDATE khuyen_mai
-            SET ma_code = :ma,
-                ten_khuyen_mai = :ten,
-                phan_tram_giam = :phan_tram,
-                so_tien_giam = :tien,
-                don_toi_thieu = :toi_thieu,
-                kieu_giam = :kieu,
-                hien_thi_checkout = :hien_checkout,
-                ngay_bat_dau = :bd,
-                ngay_ket_thuc = :kt,
-                trang_thai = :tt
-            WHERE id_khuyen_mai = :id
+            INSERT INTO khuyen_mai
+                (ten_khuyen_mai, phan_tram_giam, ngay_bat_dau, ngay_ket_thuc, trang_thai)
+            VALUES
+                (:ten, :giam, :bd, :kt, :tt)
         ");
-
         return $s->execute([
-            ':ma' => $maCode,
-            ':ten' => $ten,
-            ':phan_tram' => $phanTramGiam,
-            ':tien' => $soTienGiam,
-            ':toi_thieu' => $donToiThieu,
-            ':kieu' => $kieuGiam,
-            ':hien_checkout' => $hienThiCheckout,
-            ':bd' => $d['ngay_bat_dau'],
-            ':kt' => $d['ngay_ket_thuc'],
-            ':tt' => $d['trang_thai'] ?? 'dang_dien_ra',
-            ':id' => $id,
+            ':ten'  => $d['ten_khuyen_mai'],
+            ':giam' => $d['phan_tram_giam'],
+            ':bd'   => $d['ngay_bat_dau'],
+            ':kt'   => $d['ngay_ket_thuc'],
+            ':tt'   => $d['trang_thai'] ?? 'dang_dien_ra',
         ]);
     }
-
-    $s = $this->pdo->prepare("
-        INSERT INTO khuyen_mai
-            (ma_code, ten_khuyen_mai, phan_tram_giam, so_tien_giam, don_toi_thieu,
-             kieu_giam, hien_thi_checkout, ngay_bat_dau, ngay_ket_thuc, trang_thai)
-        VALUES
-            (:ma, :ten, :phan_tram, :tien, :toi_thieu, :kieu, :hien_checkout, :bd, :kt, :tt)
-    ");
-
-    return $s->execute([
-        ':ma' => $maCode,
-        ':ten' => $ten,
-        ':phan_tram' => $phanTramGiam,
-        ':tien' => $soTienGiam,
-        ':toi_thieu' => $donToiThieu,
-        ':kieu' => $kieuGiam,
-        ':hien_checkout' => $hienThiCheckout,
-        ':bd' => $d['ngay_bat_dau'],
-        ':kt' => $d['ngay_ket_thuc'],
-        ':tt' => $d['trang_thai'] ?? 'dang_dien_ra',
-    ]);
-}
 
     public function deletePromotion(int $id): bool
     {

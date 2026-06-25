@@ -1,8 +1,6 @@
 <?php
 declare(strict_types=1);
 
-require_once __DIR__ . '/Promotion.php';
-
 class Order
 {
     public function __construct(private PDO $pdo) {}
@@ -113,24 +111,6 @@ class Order
             $stmt = $this->pdo->prepare('SELECT COALESCE(SUM(so_luong * don_gia), 0) FROM chi_tiet_gio_hang WHERE id_gio_hang = :cid');
             $stmt->execute([':cid' => $cartId]);
             $tongTien = (float)$stmt->fetchColumn();
-            $promotionCode = trim((string)($d['promotion_code'] ?? ''));
-            $giamGia = 0.0;
-
-            if ($promotionCode !== '') {
-                $promotion = new Promotion($this->pdo);
-                $promotionData = $promotion->findCheckoutPromotionByCode($promotionCode, $tongTien);
-
-                if (!$promotionData) {
-                    throw new Exception('Mã giảm giá không hợp lệ hoặc đã hết hạn.');
-                }
-                if (!$promotionData['is_applicable']) {
-                    throw new Exception('Đơn hàng chưa đủ điều kiện áp dụng mã giảm giá này.');
-                }
-
-                $giamGia = (float)$promotionData['discount_amount'];
-            }
-
-            $tongTienSauGiam = $tongTien - $giamGia;
 
             // Tạo đơn hàng
             $stmt = $this->pdo->prepare('
@@ -140,7 +120,7 @@ class Order
             $stmt->execute([
                 ':uid' => $uid,
                 ':method' => $m,
-                ':total' => $tongTienSauGiam,
+                ':total' => $tongTien,
                 ':name' => $n,
                 ':phone' => $phone,
                 ':address' => $a,
@@ -168,7 +148,7 @@ class Order
 
             // Tạo thanh toán
             $stmt = $this->pdo->prepare('INSERT INTO thanh_toan(id_don_hang, id_phuong_thuc, so_tien) VALUES(:oid, :m, :total)');
-            $stmt->execute([':oid' => $oid, ':m' => $m, ':total' => $tongTienSauGiam]);
+            $stmt->execute([':oid' => $oid, ':m' => $m, ':total' => $tongTien]);
 
             // Tạo vận chuyển
             $stmt = $this->pdo->prepare('INSERT INTO van_chuyen(id_don_hang, phi_van_chuyen) VALUES(:oid, 0)');

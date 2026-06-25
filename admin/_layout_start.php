@@ -25,15 +25,11 @@ $currentPath = basename($_SERVER['PHP_SELF']);
 
         <a class="<?= $currentPath === 'index.php' ? 'active' : '' ?>"
            href="<?= BASE_URL ?>/admin/index.php">
-            <i class="bi bi-speedometer2"></i> Tổng Quan
+            <i class="bi bi-speedometer2"></i> Dashboard
         </a>
         <a class="<?= $currentPath === 'orders.php' ? 'active' : '' ?>"
            href="<?= BASE_URL ?>/admin/orders.php">
             <i class="bi bi-box-seam"></i> Đơn hàng
-        </a>
-        <a class="<?= $currentPath === 'warranty.php' ? 'active' : '' ?>"
-            href="<?= BASE_URL ?>/admin/warranty.php">
-            <i class="bi bi-shield-check"></i> Bảo hành
         </a>
         <a class="<?= $currentPath === 'reviews.php' ? 'active' : '' ?>"
            href="<?= BASE_URL ?>/admin/reviews.php">
@@ -63,34 +59,20 @@ $currentPath = basename($_SERVER['PHP_SELF']);
            href="<?= BASE_URL ?>/admin/payment_methods.php">
             <i class="bi bi-wallet2"></i> Thanh toán
         </a>
-        <a href="<?= BASE_URL ?>/admin/promotions.php">
-             <i class="bi bi-percent"></i> Khuyến mãi
-        </a>
+
         <hr style="border-color:rgba(255,255,255,0.15);margin:12px 0">
 
+        <a href="<?= BASE_URL ?>/shop.php">
+            <i class="bi bi-shop"></i> Về shop
+        </a>
+        <a href="<?= BASE_URL ?>/logout.php">
+            <i class="bi bi-box-arrow-right"></i> Đăng xuất
+        </a>
+
+        <a href="<?= BASE_URL ?>/admin/promotions.php">
+    <i class="bi bi-percent"></i> Khuyến mãi
+</a>
     </aside>
 
     <main class="admin-main">
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-        <div class="admin-topbar">
-    <div class="admin-dropdown">
-        <button class="admin-user-btn">
-            <i class="bi bi-person-circle"></i>
-            Admin
-            <i class="bi bi-chevron-down"></i>
-        </button>
-
-        <div class="admin-dropdown-menu">
-            <a href="<?= BASE_URL ?>">
-                <i class="bi bi-shop"></i>
-                Về shop
-            </a>
-
-            <a href="<?= BASE_URL ?>/logout.php">
-                <i class="bi bi-box-arrow-right"></i>
-                Đăng xuất
-            </a>
-        </div>
-    </div>
-</div>
