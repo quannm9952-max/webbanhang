@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../models/Cart.php';
 require_once __DIR__ . '/../models/Order.php';
-require_once __DIR__ . '/../models/Promotion.php';
 require_once __DIR__ . '/../models/User.php';
 
 class OrderController
@@ -29,14 +28,12 @@ class OrderController
         }
 
         $order = new Order($this->pdo);
-        $total = $cart->getTotalPrice();
 
         $user = (new User($this->pdo))->findById((int)$_SESSION['id_nguoi_dung']);
 
         return [
             'items' => $items,
-            'total' => $total,
-            'checkoutPromotions' => (new Promotion($this->pdo))->visibleCheckoutPromotions($total),
+            'total' => $cart->getTotalPrice(),
             'methods' => $order->getPaymentMethods(),
             'error' => flash('error'),
             'user'  => $user,

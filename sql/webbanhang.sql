@@ -358,38 +358,25 @@ INSERT INTO `gio_hang` (`id_gio_hang`, `id_nguoi_dung`, `ngay_tao`) VALUES
 
 CREATE TABLE `khuyen_mai` (
   `id_khuyen_mai` int(11) NOT NULL,
-  `ma_code` varchar(50) DEFAULT NULL,
-  `ten_khuyen_mai` varchar(255) NOT NULL,
-  `phan_tram_giam` decimal(5,2) NOT NULL DEFAULT 0.00,
-  `so_tien_giam` decimal(12,2) NOT NULL DEFAULT 0.00,
-  `don_toi_thieu` decimal(12,2) NOT NULL DEFAULT 0.00,
-  `kieu_giam` enum('phan_tram','tien_mat') NOT NULL DEFAULT 'phan_tram',
-  `hien_thi_checkout` tinyint(1) NOT NULL DEFAULT 1,
+  `ten_khuyen_mai` varchar(150) NOT NULL,
+  `phan_tram_giam` decimal(5,2) NOT NULL,
   `ngay_bat_dau` datetime NOT NULL,
   `ngay_ket_thuc` datetime NOT NULL,
-  `trang_thai` varchar(50) NOT NULL DEFAULT 'dang_dien_ra'
+  `trang_thai` enum('dang_dien_ra','ket_thuc','an') DEFAULT 'dang_dien_ra'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 --
 -- Đang đổ dữ liệu cho bảng `khuyen_mai`
 --
 
-INSERT INTO `khuyen_mai`
-(`id_khuyen_mai`, `ma_code`, `ten_khuyen_mai`, `phan_tram_giam`, `so_tien_giam`, `don_toi_thieu`, `kieu_giam`, `ngay_bat_dau`, `ngay_ket_thuc`, `trang_thai`) VALUES
-(1, 'MEGA10', 'Mega Sale', 10.00, 0.00, 0.00, 'phan_tram', '2026-04-30 13:10:00', '2026-06-25 13:10:00', 'dang_dien_ra'),
-(2, 'SALE50', 'Giảm 50.000đ cho đơn bất kỳ', 0.00, 50000.00, 0.00, 'tien_mat', '2026-01-01 00:00:00', '2026-12-31 23:59:59', 'dang_dien_ra'),
-(3, 'FAN100', 'Giảm 100.000đ cho đơn từ 50.000đ', 0.00, 100000.00, 50000.00, 'tien_mat', '2026-01-01 00:00:00', '2026-12-31 23:59:59', 'dang_dien_ra'),
-(4, 'PHONE600', 'Giảm ngay 600.000đ', 0.00, 600000.00, 1000000.00, 'tien_mat', '2026-01-01 00:00:00', '2026-12-31 23:59:59', 'dang_dien_ra');
+INSERT INTO `khuyen_mai` (`id_khuyen_mai`, `ten_khuyen_mai`, `phan_tram_giam`, `ngay_bat_dau`, `ngay_ket_thuc`, `trang_thai`) VALUES
+(1, 'Mega Sale', 10.00, '2026-04-30 13:10:58', '2026-05-31 13:10:58', 'dang_dien_ra');
 
 -- --------------------------------------------------------
 
 --
 -- Cấu trúc bảng cho bảng `nguoi_dung`
 --
-
--- Ma an mau: khong hien san o checkout, chi hien khi nhap dung PHONE600.
-UPDATE `khuyen_mai`
-SET `hien_thi_checkout` = 0
-WHERE `ma_code` = 'PHONE600';
 
 CREATE TABLE `nguoi_dung` (
   `id_nguoi_dung` int(11) NOT NULL,
@@ -693,8 +680,6 @@ ALTER TABLE `gio_hang`
 --
 ALTER TABLE `khuyen_mai`
   ADD PRIMARY KEY (`id_khuyen_mai`);
-ALTER TABLE `khuyen_mai`
-  ADD UNIQUE KEY `uk_khuyen_mai_ma_code` (`ma_code`);
 
 --
 -- Chỉ mục cho bảng `nguoi_dung`
