@@ -28,7 +28,11 @@ if (is_logged_in()) {
 
 <div class="top-strip">
     <div class="container d-flex justify-content-between flex-wrap gap-2">
-        <span><i class="bi bi-lightning-charge-fill text-warning"></i> TechShop Flash Sale — Giảm đến 40%</span>
+        <span>
+            <a href="<?= $base ?>/promotions.php" class="text-white text-decoration-none d-inline-flex align-items-center gap-1" style="transition: opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+                <i class="bi bi-lightning-charge-fill text-warning"></i> TechShop Flash Sale — Giảm đến 40% - Xem ngay!
+            </a>
+        </span>
         <span><i class="bi bi-telephone-fill me-1"></i>1900 1234 &nbsp;|&nbsp; <i class="bi bi-clock me-1"></i>8:00–22:00</span>
     </div>
 </div>

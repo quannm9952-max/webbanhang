@@ -62,6 +62,13 @@ class Product
         return $this->pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function getPromotionalProducts(string $sort = 'newest'): array
+    {
+        $sql = "SELECT * FROM (" . $this->baseSelect() . ") p 
+                WHERE p.trang_thai = 'dang_ban' AND p.gia_giam IS NOT NULL" . $this->orderBy($sort);
+        return $this->pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function getById(int $id): ?array
     {
         $stmt = $this->pdo->prepare("SELECT * FROM (" . $this->baseSelect() . ") p WHERE p.id_san_pham = :id LIMIT 1");
